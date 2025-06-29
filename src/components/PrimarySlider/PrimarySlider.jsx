@@ -1,0 +1,63 @@
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+import slider1 from "../../assets/images/slider-image-1.jpeg";
+import slider2 from "../../assets/images/slider-image-2.jpeg";
+import slider3 from "../../assets/images/slider-image-3.jpeg";
+import slider4 from "../../assets/images/grocery-banner-2.jpeg";
+import slider5 from "../../assets/images/slider-2.jpeg";
+import CategoryBox from "../CategoryBox/CategoryBox";
+
+export default function PrimarySlider() {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 items-stretch p-4">
+            {/* Left side - Slider */}
+            <div className="md:col-span-2">
+                <Swiper
+                    modules={[Autoplay, Pagination]}
+                    autoplay={{ delay: 3000 }}
+                    pagination={{ clickable: true }}
+                    loop={true}
+                >
+                    <SwiperSlide>
+                        <CategoryBox info={{ img: slider1, des: 30, head: "New Groceries Deals", price: "250" }} />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CategoryBox info={{ img: slider2, des: 15, head: "Best Chocolate Offers", price: "150" }} />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <CategoryBox info={{ img: slider3, des: 40, head: "Snack & Chips Offers", price: "300" }} />
+                    </SwiperSlide>
+                </Swiper>
+            </div>
+            {/* Right side - Slider images */}
+            <div className="flex flex-col">
+                <div className="relative w-full h-[250px]">
+                    <img
+                        src={slider4}
+                        className="w-full h-full object-cover"
+                        alt="Slider"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 left-4">
+                        <h3 className="text-slate-800 text-xl font-bold">Best Bread</h3>
+                    </div>
+                </div>
+
+                <div className="relative w-full h-[250px]">
+                    <img
+                        src={slider5}
+                        className="w-full h-full object-cover"
+                        alt="Slider"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 left-4">
+                        <h3 className="text-slate-800 text-xl font-bold">Best Vegetables</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    );
+}
