@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import CartItem from "../../Components/CartItem/CartItem";
+import CartItem from "../../components/CartItem/CartItem";
 import { Link } from "react-router";
 import AnimatedSVG from "../../components/AnimateSvg/AnimateSvg";
 import animationData from '../../assets/images/Zero Purchase.json';
