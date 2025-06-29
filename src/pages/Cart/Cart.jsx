@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import CartItem from "../../components/CartItem/CartItem";
 import { Link } from "react-router";
 import AnimatedSVG from "../../components/AnimateSvg/AnimateSvg";
-import animationData from '../../assets/images/Zero Purchase.json';
+import animationData from '../../assets/images/zeroPurchase.json';
 import { cartContext } from "../../Context/CartContext";
 import Loading from "../../components/Loading/Loading";
 
