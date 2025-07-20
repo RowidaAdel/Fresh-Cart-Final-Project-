@@ -1,60 +1,75 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router';
-import { CircleUserRound, LogIn, LogOut } from 'lucide-react';
+import { CircleUserRound, Heart, LogIn, LogOut, ShoppingCart } from 'lucide-react';
+import { WashlistContext } from '../../Context/washListContext';
+import { useSelector } from 'react-redux';
 
 export default function MobileMenu({ token, logout, toggleMobileMenu }) {
+
+    const cart = useSelector((state) => state.cart.cart);
+    const { wishlist } = useContext(WashlistContext);
+
+    const counter = cart?.numOfCartItems || 0;
+    const wishlistCount = wishlist?.length || 0;
+
     return (
         <div className={`lg:hidden transition-all duration-500`}>
-            <div className='bg-gray-300 p-8 z-50'>
+            <div className='bg-gray-300 dark:bg-slate-800 text-black dark:text-white p-8 z-50 space-y-5'>
                 {token && (
                     <ul className='space-y-3'>
-                        <li><Link to="/home" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>Home</Link></li>
-                        <li><Link to="/products" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>Products</Link></li>
-                        <li><Link to="/categories" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>Categories</Link></li>
-                        <li><Link to="/brands" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>Brands</Link></li>
-                        <li><Link to="/order" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>Order</Link></li>
+                        <li><Link to="/home" className='text-xl font-medium' onClick={toggleMobileMenu}>Home</Link></li>
+                        <li><Link to="/products" className='text-xl font-medium' onClick={toggleMobileMenu}>Products</Link></li>
+                        <li><Link to="/categories" className='text-xl font-medium' onClick={toggleMobileMenu}>Categories</Link></li>
+                        <li><Link to="/brands" className='text-xl font-medium' onClick={toggleMobileMenu}>Brands</Link></li>
+                        <li><Link to="/allorders" className='text-xl font-medium' onClick={toggleMobileMenu}>Orders</Link></li>
                     </ul>
                 )}
+
+                {token && (
+                    <ul className='space-y-3 border-t pt-4'>
+                        <li className='flex items-center gap-2'>
+                            <Link to="/cart" onClick={toggleMobileMenu} className='flex items-center gap-2'>
+                                <ShoppingCart size={20} />
+                                <span>Cart</span>
+                                {counter > 0 && <span className="bg-mainColor text-white px-2 rounded-full text-sm">{counter}</span>}
+                            </Link>
+                        </li>
+                        <li className='flex items-center gap-2'>
+                            <Link to="/washlist" onClick={toggleMobileMenu} className='flex items-center gap-2'>
+                                <Heart size={20} />
+                                <span>Wishlist</span>
+                                {wishlistCount > 0 && <span className="bg-red-400 text-white px-2 rounded-full text-sm">{wishlistCount}</span>}
+                            </Link>
+                        </li>
+                    </ul>
+                )}
+
                 <ul className='space-y-3 mt-4 border-t pt-4'>
                     {!token ? (
                         <>
                             <li className='flex items-center gap-2'>
-                                <Link to="/login" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>
-                                    Login
+                                <Link to="/login" className='text-xl font-medium flex items-center gap-2' onClick={toggleMobileMenu}>
+                                    Login <LogIn size={20} />
                                 </Link>
-                                <LogIn size={20} />
                             </li>
                             <li>
-                                <Link to="/register" className='text-xl font-medium link-hover relative afterEffect cursor-pointer' onClick={toggleMobileMenu}>
-                                    Register
-                                </Link>
+                                <Link to="/register" className='text-xl font-medium' onClick={toggleMobileMenu}>Register</Link>
                             </li>
                         </>
                     ) : (
                         <>
                             <li className='flex items-center gap-2'>
-                                <Link
-                                    to="/profile"
-                                    className='text-xl font-medium link-hover relative afterEffect cursor-pointer'
-                                    onClick={toggleMobileMenu}
-                                >
-                                    Profile
+                                <Link to="/profile" className='text-xl font-medium flex items-center gap-2' onClick={toggleMobileMenu}>
+                                    Profile <CircleUserRound size={20} />
                                 </Link>
-                                <CircleUserRound size={20} />
                             </li>
-                            <li className='flex items-center gap-2 text-xl font-medium cursor-pointer'>
-                                <span
-                                    onClick={() => {
-                                        logout();
-                                        toggleMobileMenu();
-                                    }}
-                                    className='link-hover relative afterEffect'
-                                >
-                                    Logout
-                                </span>
+                            <li className='flex items-center gap-2 text-xl font-medium cursor-pointer' onClick={() => {
+                                logout();
+                                toggleMobileMenu();
+                            }}>
+                                <span>Logout</span>
                                 <LogOut size={20} />
                             </li>
-
                         </>
                     )}
                 </ul>

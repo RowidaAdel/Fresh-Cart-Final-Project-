@@ -2,35 +2,30 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
-import Confirmed from '../../../assets/images/Confirmed.png';
+import Confirmed from '../../../assets/images/Confirmed.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useAuthApi } from '../../../Hooks/useAuthApi';
+import { toast } from 'react-hot-toast';
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function VerifyCode() {
   useEffect(() => {
     document.title = "Verify Code";
+    AOS.init({ duration: 1000, once: false });
   }, []);
 
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const validationSchema = yup.object({
-    resetCode: yup
-      .string("Reset Code must be string")
-      .required('Reset code is required'),
+    resetCode: yup.string("Reset Code must be string").required('Reset code is required'),
   });
 
-  const {
-    mutate: verifyCode,
-    isLoading,
-  } = useAuthApi({
+  const { mutate: verifyCode } = useAuthApi({
     endpoint: 'verifyResetCode',
-    method: 'POST',
-    successMessage: 'Code verified successfully!',
-    onSuccessCallback: () => navigate('/resetpassword'),
-    onErrorCallback: (err) =>
-      setError(err.response?.data?.message || 'Something went wrong'),
   });
 
   const formik = useFormik({
@@ -38,48 +33,55 @@ export default function VerifyCode() {
       resetCode: '',
     },
     validationSchema,
-    onSubmit: (values) =>
-      verifyCode({ resetCode: String(values.resetCode).trim() }),
+    onSubmit: (values) => {
+      setLoading(true);
+      setError('');
+      verifyCode(
+        { resetCode: values.resetCode.trim() },
+        {
+          onSuccess: () => {
+            toast.success('Code verified successfully!');
+            setLoading(false);
+            navigate('/resetpassword');
+          },
+          onError: (err) => {
+            const msg = err.response?.data?.message || 'Something went wrong';
+            toast.error(msg);
+            setError(msg);
+            setLoading(false);
+          },
+        }
+      );
+    },
   });
 
   return (
     <div className="flex items-center justify-center bg-gray-100 dark:bg-slate-800">
       <div className="formContainer">
         {/* Right side - Image */}
-        <div className="imgSide">
-          <img src={Confirmed} alt="Confirmed illustration" className="max-w-full h-auto" />
+        <div className="imgSide" data-aos="fade-left">
+          <img loading='lazy' src={Confirmed} alt="Confirmed illustration" className="max-w-full h-auto" />
         </div>
         {/* Left side - Verify Form */}
-        <div className="divForm">
-          <h2 className="titleForm">Verify Reset Code:</h2>
+        <div className="divForm" data-aos="fade-right">
+          <h2 className="titleForm" data-aos="fade-up">Verify Reset Code:</h2>
           {error && <h3 className="error">{error}</h3>}
           <form onSubmit={formik.handleSubmit}>
             {/* Reset Code */}
             <div>
               <label htmlFor="resetCode" className="block mb-1">Reset Code</label>
-              <input
-                type="text"
-                name="resetCode"
-                value={formik.values.resetCode}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="input"
-                inputMode="numeric"
-                pattern="\d*"
-                placeholder="123456"
-              />
+              <input id="resetCode" type="text" name="resetCode"
+                value={formik.values.resetCode} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                className="input" inputMode="numeric" pattern="\d*" placeholder="123456" autoComplete="one-time-code" />
               {formik.errors.resetCode && formik.touched.resetCode && (
                 <p className="formikError">{formik.errors.resetCode}</p>
               )}
             </div>
             {/* Submit Button */}
             <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`loadingBtn ${isLoading ? 'cursor-not-allowed' : 'hover:bg-hoverColor'}`}
-              >
-                {isLoading ? (
+              <button id="verifyBtn" name="verifyBtn" autoComplete="off" type="submit" disabled={loading}
+                className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
+                {loading ? (
                   <>
                     Loading
                     <FontAwesomeIcon icon={faSpinner} spin />

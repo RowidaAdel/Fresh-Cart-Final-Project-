@@ -15,7 +15,6 @@ import Profile from "./pages/Authentication/Profile/Profile";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Washlist from "./pages/Washlist/Washlist";
 import Products from "./pages/Products/Products";
-import CartContextProvider from "./Context/CartContext";
 import WashListContextProvider from "./Context/washListContext";
 import Notfound from "./pages/Error/NotFoundPage";
 import AllOrders from "./pages/AllOrders/AllOrders";
@@ -23,16 +22,22 @@ import Categories from "./pages/Categories/Categories";
 import Brands from "./pages/Brands/Brands";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Checkout from "./components/Checkout/Checkout";
+import BrandDetails from "./components/BrandDetails/BrandDetails";
+import CategoryProducts from "./pages/CategoryProduct/CategoryProduct";
+import Offline from "./pages/Offline/Offline";
+import NetworkStatusWrapper from "./components/NetworkStatusWrapper/NetworkStatusWrapper";
+import { Provider } from "react-redux";
+import { store } from "./Redux/store";
 
 const routes = createBrowserRouter([
   {
-    path: '/', element: <Layout />, children: [
-      {
-        index: true,
-        element: <Navigate to="/login" />
-      }, {
-        path: '*', element: <Notfound />
-      },
+    path: '/', element:
+      <NetworkStatusWrapper>
+        {(isOnline) => <Layout isOnline={isOnline} />}
+      </NetworkStatusWrapper>
+    , children: [
+      { index: true, element: <Navigate to="/login" /> },
+      { path: '*', element: <Notfound /> },
       {
         path: '/home', element: (
           <ProtectedRoutes>
@@ -55,9 +60,23 @@ const routes = createBrowserRouter([
         )
       },
       {
-        path: '/productdetails/:id', element: (
+        path: '/products/:id', element: (
           <ProtectedRoutes>
             <ProductDetails />
+          </ProtectedRoutes>
+        )
+      },
+      {
+        path: '/brands/:id', element: (
+          <ProtectedRoutes>
+            <BrandDetails />
+          </ProtectedRoutes>
+        )
+      },
+      {
+        path: '/categories/:id', element: (
+          <ProtectedRoutes>
+            <CategoryProducts />
           </ProtectedRoutes>
         )
       },
@@ -71,9 +90,12 @@ const routes = createBrowserRouter([
       {
         path: '/checkout', element: (
           <ProtectedRoutes>
-            <Checkout/>
+            <Checkout />
           </ProtectedRoutes>
         )
+      },
+      {
+        path: '/offline', element: <Offline />
       },
       {
         path: '/allorders', element: (
@@ -128,17 +150,16 @@ export default function App() {
 
   return (
     <>
-      <QueryClientProvider client={client}>
-        <WashListContextProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={client}>
           <AuthContextProvider>
-            <CartContextProvider>
+            <WashListContextProvider>
               <RouterProvider router={routes} />
               <Toaster position="top-right" />
-            </CartContextProvider>
+            </WashListContextProvider>
           </AuthContextProvider>
-        </WashListContextProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </Provider>
     </>
   )
 }
-

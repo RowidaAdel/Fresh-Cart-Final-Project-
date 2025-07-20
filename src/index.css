@@ -2,7 +2,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 @theme {
   --color-mainColor: #0aad0a;
   --color-bgColor: #82fa82;
@@ -25,7 +24,11 @@
   }
 
   .afterEffect {
-    @apply after:absolute hover:after:w-full after:h-2 after:bg-mainColor after:w-0 after:left-0 after:bottom-0 after:transition-[width] after:duration-500;
+    @apply after:absolute hover:after:w-full after:h-1 after:bg-mainColor after:w-0 after:left-0 after:bottom-0 after:transition-[width] after:duration-500;
+  }
+
+  .link-hover.active {
+    @apply text-mainColor;
   }
 
   .formContainer {
@@ -33,7 +36,7 @@
   }
 
   .title {
-    @apply text-5xl py-4 text-mainColor font-extrabold transition-colors duration-300;
+    @apply text-3xl py-2 text-center text-mainColor font-bold transition-colors duration-300;
   }
 
   .input {
@@ -82,9 +85,13 @@
 }
 
 @utility container {
-  margin: 0 auto;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 
-  @media (width >=80rem) {
+  @media (width >= 80rem) {
     max-width: 75rem;
   }
 }
@@ -93,36 +100,6 @@
   background: #d5d5d5;
   height: 1px;
   margin: 25px 0;
-}
-
-.loader {
-  position: relative;
-  width: 100px;
-  height: 100px;
-}
-
-.loader:before,
-.loader:after {
-  content: '';
-  border-radius: 50%;
-  position: absolute;
-  inset: 0;
-  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
-}
-
-.loader:after {
-  box-shadow: 0 2px 0 #0aad0a inset;
-  animation: rotate 2s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0)
-  }
-
-  100% {
-    transform: rotate(360deg)
-  }
 }
 
 .perspective-1000 {
@@ -166,4 +143,14 @@
 
 .swiper-pagination-bullet-active {
   background-color: #41bb41 !important;
+}
+
+.link-hover::after {
+  transition-property: width;
+  transition-timing-function: ease;
+  transition-duration: 0.5s;
+}
+
+.link-hover.active::after {
+  width: 100%;
 }

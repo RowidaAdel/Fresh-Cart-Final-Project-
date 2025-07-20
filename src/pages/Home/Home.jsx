@@ -1,58 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ProductCard from '../../components/ProductCard/ProductCard';
-import axios from 'axios';
-// import Loader from '../../components/Loader/Loader';
 import Loading from '../../components/Loading/Loading';
-
 import PrimarySlider from '../../components/PrimarySlider/PrimarySlider';
 import SecondarySlider from '../../components/SecondarySlider/SecondarySlider';
-// import AnimatedSVG from '../../components/AnimateSvg/AnimateSvg';
-
+import useFetch from '../../Hooks/useFetch';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function Home() {
-    let [products, setProduct] = useState([])
-    let [error, setError] = useState(false)
-    let [loading, setLoading] = useState(false)
+  const { data: products, isLoading, isError } = useFetch("products", "allProducts");
 
-    useEffect(() => {
-        document.title = "Home";
-        getAllProducts()
-    }, []);
+  useEffect(() => {
+    document.title = "Home";
+    AOS.init({ duration: 800, once: false, offset: 120, easing: 'ease-in-out' });
+  }, []);
 
-    async function getAllProducts() {
-        setLoading(true)
-        try {
-            let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/products")
-            console.log(data);
-            setProduct(data.data)
-        } catch (error) {
-            console.log(error);
-            setError(true)
-        } finally {
-            setLoading(false)
-        }
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setTimeout(() => {
+        AOS.refreshHard();
+      }, 500);
     }
-    if (loading) {
-        return <div className="loading"><Loading /></div>
-    }
+  }, [products]);
+
+  if (isLoading) {
     return (
-        <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh]'>
-            <div className="py-7 container">
-                <div className="image w-full lg:w-1/2 lg:mt-0 -mt-5">
-                    {/* <AnimatedSVG/> */}
-                </div>
-                {/* {loading ? <Loader /> : error ? <h3 className='text-6xl text-red-500'>There are No Products</h3> : ( */}
-                <>
-                    <PrimarySlider />
-                    <SecondarySlider />
-                    <h2 className='title'>Products</h2>
-                    <div className="grid grid-cols-1 py-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {products.map((item) => (
-                            <ProductCard item={item} key={item._id} />
-                        ))}
-                    </div>
-                </>
-            </div>
-        </div>
+      <div className="loading bg-slate-200 dark:bg-gray-800">
+        <Loading />
+      </div>
     );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500 py-10">
+        <p>Something went wrong while fetching products.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh]'>
+      <div className="py-7 container">
+        <PrimarySlider />
+        <SecondarySlider />
+        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+        <h2 className='title' data-aos="zoom-out">Products</h2>
+        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+        <div className="grid grid-cols-1 py-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {products?.map((item) => (
+            <ProductCard key={item._id} item={item} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

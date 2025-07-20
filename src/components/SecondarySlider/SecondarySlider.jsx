@@ -1,55 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import axios from 'axios';
+import { useNavigate } from 'react-router';
+import useFetch from '../../Hooks/useFetch';
 
 export default function SecondarySlider() {
-  let [categories, setCategories] = useState(null);
+  const navigate = useNavigate();
 
-  async function getCategories() {
-    let { data } = await axios.get('https://ecommerce.routemisr.com/api/v1/categories');
-    setCategories(data.data);
-  }
-
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const { data: categories } = useFetch('categories', 'categories');
 
   return (
     <div className="pb-8">
-      <h2 className="py-5 text-mainColor text-2xl font-semibold">Shop Popular Categories</h2>
-
-      {/* Wrapper to push dots under */}
-      <div className="relative">
-        <Swiper
-          slidesPerView={7}
-          autoplay={{
-            delay: 500,
-            disableOnInteraction: false,
-          }}
-          navigation={true}
-          pagination={{
-            clickable: true,
-            el: '.custom-swiper-pagination',
-          }}
-          modules={[Autoplay, Navigation, Pagination]}
-          className="pb-4"
-        >
-          {categories?.map((category, index) => (
-            <SwiperSlide key={index}>
-              <img
-                src={category.image}
-                className="w-[700px] h-[250px] object-cover"
-                alt={`Category ${index}`}
-              />
+      <h2 className="py-5 text-mainColor text-xl font-semibold">Shop Popular Categories</h2>
+      <div className="relative cursor-pointer">
+        <Swiper loop={categories?.length > 6} autoplay={{ delay: 500, disableOnInteraction: false }} spaceBetween={10}
+          pagination={{ clickable: true, el: '.custom-swiper-pagination' }} modules={[Autoplay, Navigation, Pagination]} className="pb-4"
+          breakpoints={{
+            0: {
+              slidesPerView: 1.5,
+            },
+            480: {
+              slidesPerView: 2,
+            },
+            640: {
+              slidesPerView: 3,
+            },
+            768: {
+              slidesPerView: 4,
+            },
+            1024: {
+              slidesPerView: 5,
+            },
+            1280: {
+              slidesPerView: 6,
+            },
+          }}>
+          {categories?.map((category) => (
+            <SwiperSlide key={category._id} onClick={() => navigate(`/categories/${category._id}`)}>
+              <div className="w-full h-64 overflow-hidden rounded-md">
+                <img loading='lazy' src={category.image} className="w-full h-full object-cover" alt={category.name} />
+              </div>
+              <h2 className="text-center mt-2 text-sm text-hoverColor dark:text-white font-medium">{category.name}</h2>
             </SwiperSlide>
           ))}
         </Swiper>
-
-        {/* Custom pagination container */}
-        <div className="custom-swiper-pagination mt-4 flex justify-center"></div>
       </div>
     </div>
   );

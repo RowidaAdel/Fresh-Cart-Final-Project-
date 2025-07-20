@@ -4,25 +4,34 @@ import { object, string } from 'yup';
 import { Link, useNavigate } from 'react-router';
 import { authContext } from '../../../Context/authContext';
 import { Eye, EyeOff } from 'lucide-react';
-import loginPhoto from '../../../assets/images/login.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import loginPhoto from '../../../assets/images/login.webp';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useAuthApi } from '../../../Hooks/useAuthApi';
+import toast from 'react-hot-toast';
 
 export default function Login() {
-  let { setToken } = useContext(authContext);
-
   useEffect(() => {
     document.title = "Login";
   }, []);
 
+  const { setToken } = useContext(authContext);
   const passwordRegex = /^[A-Z][a-z0-9]{5,}$/;
+
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
 
+  const navigate = useNavigate();
+
+  const { mutate: login } = useAuthApi({
+    endpoint: 'signin',
+    successMessage: 'Logged in successfully!',
+  });
+
   const validationSchema = object({
-    email: string('email must be string').required("email is required").email("email must be validate"),
-    password: string("Password must be a string").required("Password is required").matches(passwordRegex, 'password must start capital letter followed by 5 or more chars'),
+    email: string().required("Email is required").email("Invalid email"),
+    password: string().required("Password is required").matches(passwordRegex, 'Password must start with a capital letter and be at least 6 characters'),
   });
 
   const formik = useFormik({
@@ -30,28 +39,29 @@ export default function Login() {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      login(values);
-    },
     validationSchema,
+    onSubmit: (values) => {
+      setLoading(true);
+      login(values, {
+        onSuccess: (data) => {
+          const userName = data.user?.name?.split(' ')[0] || 'User';
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('userProfile', JSON.stringify(data.user));
+          setToken(data.token);
+          toast.success(`Welcome back, ${userName} 👋`);
+          navigate('/home');
+          setLoading(false);
+        },
+        onError: (error) => {
+          toast.error(error.response?.data?.message || 'Login failed');
+          setError(error.response?.data?.message || 'Login failed');
+          setLoading(false);
+        }
+      });
+    },
   });
 
-  const navigate = useNavigate();
-
-  const { mutate: login, isLoading } = useAuthApi({
-    endpoint: 'signin',
-    successMessage: 'Logged in successfully!',
-    onSuccessCallback: (data) => {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userProfile', JSON.stringify(data.user));
-      setToken(data.token);
-      navigate('/home');
-    }
-  });
-
-  function toggleShowPass() {
-    setShowPass(!showPass);
-  }
+  const toggleShowPass = () => setShowPass(!showPass);
 
   return (
     <div className="flex items-center justify-center">
@@ -64,9 +74,8 @@ export default function Login() {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block mb-1">Email</label>
-              <input type="email" name="email"
-                value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur}
-                className="input" />
+              <input id="email" type="email" name="email" autoComplete="email"
+                className="input" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} />
               {formik.errors.email && formik.touched.email && (
                 <p className="formikError">{formik.errors.email}</p>
               )}
@@ -74,9 +83,9 @@ export default function Login() {
             {/* Password */}
             <div className="relative">
               <label htmlFor="password" className="block mb-1">Password</label>
-              <input type={showPass ? "text" : "password"} name="password"
-                value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur}
-                className="input" />
+              <input id="password" name="password"
+                type={showPass ? "text" : "password"} autoComplete="current-password"
+                className="input" value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} />
               <div className="eye" onClick={toggleShowPass}>
                 {showPass ? <EyeOff /> : <Eye />}
               </div>
@@ -84,17 +93,17 @@ export default function Login() {
                 <p className="formikError">{formik.errors.password}</p>
               )}
             </div>
-            {/* Submit Button */}
-            <button type="submit" disabled={isLoading}
-              className={`loadingBtn ${isLoading ? 'cursor-not-allowed' : ' hover:bg-hoverColor'
-                }`} >
-              {isLoading ? (
+            {/* Submit */}
+            <button id="loginBtn" name="loginBtn" type="submit" disabled={loading} autoComplete="off"
+              className={`loadingBtn ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hoverColor'}`}>
+              {loading ? (
                 <>
                   Loading
-                  <FontAwesomeIcon icon={faSpinner} spin />
+                  <FontAwesomeIcon icon={faSpinner} spinPulse />
                 </>
               ) : (
-                'Login')}
+                'Login'
+              )}
             </button>
             {/* Links */}
             <div className="mt-4 w-full">
@@ -110,10 +119,9 @@ export default function Login() {
             </div>
           </form>
         </div>
-
         {/* Left side - Image */}
         <div className="imgSide">
-          <img src={loginPhoto} alt="login illustration" className="max-w-full h-auto" />
+          <img src={loginPhoto} alt="login illustration" loading='lazy' className="max-w-full h-auto" />
         </div>
       </div>
     </div>

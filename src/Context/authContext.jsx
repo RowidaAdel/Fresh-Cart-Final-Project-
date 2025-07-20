@@ -8,27 +8,27 @@ export default function AuthContextProvider({ children }) {
     let [token, setToken] = useState(localStorage.getItem("token"))
 
     async function verifyToken() {
-        if (localStorage.getItem('token')) {
-            try {
-                let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/auth/verifyToken", {
-                    headers: {
-                        token: localStorage.getItem("token")
-                    }
-                })
-                console.log(data);
-            } catch (error) {
-                console.log(error);
-                toast.error(error.response.data.message)
-                setToken(null)
-                localStorage.removeItem("token")
-            }
-        }
-    }
+  const localToken = localStorage.getItem("token");
+  if (!localToken) return false;
+  try {
+    await axios.get("https://ecommerce.routemisr.com/api/v1/auth/verifyToken", {
+      headers: {
+        token: localToken,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    toast.error(error.response?.data?.message || "Invalid token");
+    setToken(null);
+    localStorage.removeItem("token");
+    return false;
+  }
+}
 
-    useEffect(() => {
-        verifyToken()
-    }, [])
-
+   useEffect(() => {
+  verifyToken();
+}, []);
 
     return (
             <authContext.Provider value={{ token, setToken }}>

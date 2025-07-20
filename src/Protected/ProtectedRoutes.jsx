@@ -1,16 +1,31 @@
-import React, { useContext, useEffect } from 'react';
-import { Navigate } from 'react-router';
-import { authContext } from '../Context/authContext';
+import React, { useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router";
+import { authContext } from "../Context/authContext";
 
 export default function ProtectedRoutes({ children }) {
+  const { token } = useContext(authContext);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-    
-    let { token } = useContext(authContext)
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-    return (
-        <div>
-            {token ? children : <Navigate to={"/login"} />}
-        </div>
-    );
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  if (!isOnline) {
+    return <>{children}</>;
+  }
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  return <>{children}</>;
 }
-

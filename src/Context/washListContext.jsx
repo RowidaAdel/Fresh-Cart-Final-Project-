@@ -1,73 +1,88 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { authContext } from "./authContext";
 
-export let WashlistContext = createContext(null)
+export const WashlistContext = createContext(null);
 
-export default function WashListContextProvider({ children }) {
-    let [wishlist, setWishlist] = useState([])
-    let [loading, setLoading] = useState(false)
+export default function WashlistContextProvider({ children }) {
+  const { token } = useContext(authContext);
+  const [wishlist, setWishlist] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    async function getLoggedUserWishlist() {
-        setLoading(true)
-        try {
-            let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
-                headers: {
-                    token: localStorage.getItem("token")
-                }
-            });
-            setWishlist(data.data || []);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false)
-        }
+  async function getLoggedUserWishlist(showToast = false) {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
+        headers: { token }
+      });
+      setWishlist(data?.data || []);
+      if (showToast) {
+        toast.dismiss();
+        toast.success("Wishlist loaded ✅", { id: "wishlist-load" });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.dismiss();
+      toast.error(error.response?.data?.message || "Failed to load wishlist", { id: "wishlist-load" });
+    } finally {
+      setLoading(false);
     }
-    async function addProductToWishlist(productId) {
-        try {
-            setLoading(true);
-            const { data } = await axios.post(
-                "https://ecommerce.routemisr.com/api/v1/wishlist",
-                { productId },
-                {
-                    headers: {
-                        token: localStorage.getItem("token"),
-                    },
-                }
-            );
-            setWishlist(data.data);
-            toast.success("Product Added ✅");
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    }
+  }
 
-    async function removeProductFromWishlist(cartItemId) {
-        try {
-            setLoading(true)
-            const { data } = await axios.delete(
-                `https://ecommerce.routemisr.com/api/v1/wishlist/${cartItemId}`,
-                {
-                    headers: { token: localStorage.getItem("token") }
-                }
-            );
-            setWishlist(data.data || []);
-            toast.success("Product Deleted ❌")
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false)
-        }
-    }
+  async function addProductToWishlist(productId) {
+    if (!token) return;
+    setLoading(true);
+    setWishlist(prev => [...(prev || []), { product: { _id: productId }, _id: "temp-" + productId }]);
 
-    useEffect(() => {
-        getLoggedUserWishlist()
-    }, [])
-    return (
-        <WashlistContext.Provider value={{ wishlist, loading, addProductToWishlist, getLoggedUserWishlist, removeProductFromWishlist }}>
-            {children}
-        </WashlistContext.Provider>
-    );
+    try {
+      const { data } = await axios.post(
+        "https://ecommerce.routemisr.com/api/v1/wishlist",
+        { productId },
+        { headers: { token } }
+      );
+      setWishlist(data.data || []);
+      toast.dismiss();
+      toast.success("Product added to wishlist ✅", { id: "wishlist-add" });
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.response?.data?.message || "Failed to add product", { id: "wishlist-add" });
+      await getLoggedUserWishlist(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function removeProductFromWishlist(wishlistItemId) {
+    if (!token) return;
+    setLoading(true);
+    setWishlist(prev => prev.filter(item => item._id !== wishlistItemId));
+
+    try {
+      await axios.delete(
+        `https://ecommerce.routemisr.com/api/v1/wishlist/${wishlistItemId}`,
+        { headers: { token } }
+      );
+      toast.dismiss();
+      toast.success("Product removed from wishlist ❌", { id: "wishlist-remove" });
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.response?.data?.message || "Failed to remove product", { id: "wishlist-remove" });
+      await getLoggedUserWishlist(false); 
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getLoggedUserWishlist();
+  }, [token]);
+
+  return (
+    <WashlistContext.Provider
+      value={{wishlist, loading,getLoggedUserWishlist, addProductToWishlist,removeProductFromWishlist}} >
+      {children}
+    </WashlistContext.Provider>
+  );
 }

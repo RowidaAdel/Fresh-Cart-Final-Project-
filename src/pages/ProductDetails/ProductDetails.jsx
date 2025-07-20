@@ -1,160 +1,156 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import ProductCard from '../../components/ProductCard/ProductCard';
-import { cartContext } from '../../Context/CartContext';
 import Loading from '../../components/Loading/Loading';
+import { WashlistContext } from '../../Context/washListContext';
+import { Heart } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { addProductToCart } from '../../Redux/slices/cartSlice';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function ProductDetails() {
-    let { addProductToCart } = useContext(cartContext)
-    let [product, setProduct] = useState(null)
-    let [related, setRelated] = useState(null)
-    let [loading, setLoading] = useState(false)
-    let { id } = useParams();
-    async function getProductDetails() {
-        setLoading(true)
-        try {
-            let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`)
-            console.log(data.data);
-            getRelatedProducts(data.data.category._id)
-            setProduct(data.data)
-        } catch (error) {
-            console.log(error);
+    const dispatch = useDispatch();
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-        } finally {
-            setLoading(false)
-        }
-    }
+    const { addProductToWishlist, removeProductFromWishlist, wishlist, getLoggedUserWishlist } = useContext(WashlistContext);
+    const [product, setProduct] = useState(null);
+    const [related, setRelated] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const isDisabled = loading || !product;
+    const isInWishlist = product && wishlist?.some(item => item._id === product._id);
 
-    async function getRelatedProducts(categoryId) {
-        try {
-            let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products?category[in]=${categoryId}`)
-            console.log(data.data);
-            setRelated(data.data)
-        } catch (error) {
-            console.log(error);
-
-        }
-    }
     useEffect(() => {
-        getProductDetails()
-        document.title = "ProductDetails";
-    }, [id])
-    if (loading) {
-        return (
-            <>
-                <div className="flex justify-center items-center py-24 "><Loading /></div>
-                <div className="container py-15 animate-pulse">
-                    <div className="mx-auto bg-slate-100 shadow-lg rounded-lg overflow-hidden">
-                        <div className="flex flex-col items-center md:flex-row">
-                            <div className="md:w-1/3 p-4 relative">
-                                <div className="h-52 bg-gray-300 rounded-lg"></div>
-                                <div className="mt-2 grid grid-cols-2 gap-2">
-                                    <div className="h-20 bg-gray-300 rounded-lg"></div>
-                                    <div className="h-20 bg-gray-300 rounded-lg"></div>
-                                </div>
-                            </div>
+        document.title = 'Product Details';
+        AOS.init({ duration: 800, once: false });
+    }, []);
 
-                            <div className="md:w-2/3 p-6">
-                                <div className="h-5 bg-gray-300 rounded w-1/2 mb-2"></div>
-                                <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
-                                <div className="flex items-center mb-4">
-                                    <div className="h-4 bg-gray-300 rounded w-16"></div>
-                                    <div className="h-4 bg-gray-300 rounded w-16 ml-2"></div>
-                                </div>
+    useEffect(() => {
+        getProductDetails();
+    }, [id]);
 
-                                <div className="flex items-center justify-between mb-4">
-                                    <div>
-                                        <div className="h-8 bg-gray-300 rounded w-16"></div>
-                                    </div>
-                                    <div className="h-4 bg-gray-300 rounded w-16"></div>
-                                </div>
-                                <div className="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
-
-                                <div className="flex space-x-4">
-                                    <div className="flex-1 h-10 bg-gray-300 rounded"></div>
-                                    <div className="flex-1 h-10 bg-gray-300 rounded"></div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </>
-        )
+    async function getProductDetails() {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`);
+            const productData = data.data;
+            setProduct(productData);
+            getRelatedProducts(productData.category._id, productData._id);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     }
+
+    async function getRelatedProducts(categoryId, productId) {
+        try {
+            const { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products?category[in]=${categoryId}`);
+            const filtered = data.data.filter(item => item._id !== productId);
+            setRelated(filtered);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleWishlistToggle = async () => {
+        if (!product?._id) return;
+        if (isInWishlist) {
+            await removeProductFromWishlist(product._id);
+        } else {
+            await addProductToWishlist(product._id);
+        }
+        await getLoggedUserWishlist();
+    };
+
+    const handleBuyNow = async () => {
+        await dispatch(addProductToCart(product._id));
+        navigate('/checkout');
+    };
+
+    if (loading || !product)
+        return (
+            <div className="loading bg-slate-200 dark:bg-gray-800">
+                <Loading />
+            </div>
+        )
 
     return (
-        <>
-            <div className="container py-15">
-                <h2 className='text-mainColor text-5xl font-extrabold py-4'>Product Details</h2>
-                <div className="mx-auto bg-slate-100 shadow-lg rounded-lg overflow-hidden">
-                    <div className="flex flex-col items-center md:flex-row">
-                        <div className="md:w-1/3 p-4 relative">
-                            <div className=" ">
-                                <img src={product?.imageCover} alt="Product" className="w-full max-h-85 object-cover rounded-lg" />
-                            </div>
-                            <div>
-                                <Swiper
-                                    spaceBetween={20}
-                                    slidesPerView={2}
-                                    autoplay={{
-                                        delay: 1000,
-                                        disableOnInteraction: false,
-                                    }}
-                                    modules={[Autoplay]} >
-                                    {product?.images.map((image, index) => (
-                                        <SwiperSlide key={index}>
-                                            <img src={image} alt={`Product ${index}`} />
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                            </div>
+        <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh]'>
+            <div className="container py-10">
+                {/* Product Info */}
+                <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+                <h2 className='title'>Product Details</h2>
+                <div className="h-px bg-slate-300 dark:bg-slate-500 my-1 mb-10" />
+                <div className="relative bg-slate-200 dark:bg-gray-900 p-6 rounded-lg shadow-xl max-w-7xl mx-auto space-y-6">
+                    {/* Wishlist Icon */}
+                    <button onClick={handleWishlistToggle} aria-label="Toggle wishlist"
+                        className={`cursor-pointer absolute top-4 right-4 transition ${isInWishlist ? 'text-red-500' : 'text-gray-600 dark:text-gray-300 hover:text-red-500'}`}>
+                        <Heart className="w-6 h-6 fill-current" fill={isInWishlist ? 'red' : 'none'} />
+                    </button>
+                    {/* Images & Info */}
+                    <div className="flex flex-col md:flex-row gap-8 items-center" >
+                        <div className="md:w-1/3 space-y-4" data-aos="fade-right">
+                            <img loading='lazy' src={product.imageCover} alt="Main" className="rounded-lg object-cover w-full max-h-[340px]" />
+                            <Swiper spaceBetween={20} slidesPerView={2} autoplay={{ delay: 2000 }} modules={[Autoplay]}>
+                                {product.images.map((img, i) => (
+                                    <SwiperSlide key={i}>
+                                        <img src={img} alt={`img-${i}`} className="rounded-md object-cover w-full h-28" />
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
                         </div>
-                        <div className="md:w-2/3 p-6">
-                            <h1 className="text-2xl font-bold text-gray-800 mb-2">{product?.title}</h1>
-                            <p className="text-sm text-gray-600 mb-4">{product?.description}</p>
-                            <div className="flex items-center mb-4">
-                                <span className="bg-mainColor text-white text-sm font-semibold px-2.5 py-0.5 rounded">{product?.ratingsAverage} ★</span>
-                                <span className="text-sm text-gray-500 ml-2">{product?.ratingsQuantity} reviews</span>
+                        <div className="md:w-2/3 space-y-4 text-center md:text-left" data-aos="fade-left">
+                            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+                                {(() => {
+                                    const title = product?.title || "";
+                                    const words = title.split(" ");
+                                    return words.length > 3 ? words.slice(0, 3).join(" ") + "..." : title;
+                                })()}
+                            </h3>
+                            <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
+                            <div className="flex justify-center md:justify-start items-center gap-4">
+                                <span className="bg-mainColor text-white text-sm px-3 py-1 rounded">★ {product.ratingsAverage}</span>
+                                <span className="text-sm text-gray-600 dark:text-gray-400">{product.ratingsQuantity} reviews</span>
                             </div>
-
-                            <div className="flex items-center justify-between mb-4">
-                                <div>
-                                    <span className="text-3xl font-bold text-gray-900">$ {product?.price}</span>
-                                    <span className="ml-2 text-sm font-medium text-gray-500 line-through">
-                                        $ {product?.price + 300}
-                                    </span>
-                                </div>
-                                <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                                    Save {product?.price ? Math.round(((300) / (product.price + 300)) * 100) : 0}%
-                                </span>
+                            <div className="flex justify-center md:justify-start items-center gap-4">
+                                <span className="text-3xl font-bold text-gray-900 dark:text-white">${product.price}</span>
+                                <span className="text-red-600 font-semibold text-sm line-through">${product.price + 300}</span>
                             </div>
-                            <p className="text-mainColor text-sm font-semibold mb-4">Free Delivery</p>
-                            <div className="flex space-x-4">
-                                <button className="flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                                <button isabled={isDisabled} onClick={handleBuyNow}
+                                    className={`flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     Buy Now
                                 </button>
-                                <button onClick={() => addProductToCart(product._id)} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                                <button disabled={isDisabled} onClick={() => dispatch(addProductToCart(product._id))}
+                                    className={`flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     Add to Cart
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div className='py-4'>
-                        <h2 className='text-mainColor text-5xl font-extrabold py-4'>Related Products</h2>
-                        <div className='grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
-                            {related?.map((item) => (
-                                <ProductCard key={item._id} item={item} />
+                </div>
+                {/* Related Products */}
+                {related.length > 0 && (
+                    <div className="mt-14">
+                        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+                        <h2 className="title" data-aos="zoom-out">Related Products</h2>
+                        <div className="h-px bg-slate-300 dark:bg-slate-500 mb-10" />
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {related.map(item => (
+                                <div key={item._id}>
+                                    <ProductCard item={item} />
+                                </div>
                             ))}
                         </div>
                     </div>
-                </div>
+                )}
             </div>
-        </>
+        </div>
     );
 }

@@ -1,14 +1,9 @@
-import Lottie from 'lottie-react'; 
+import Lottie from 'lottie-react';
 
-const AnimatedSVG = ({ animationData }) => {
+export default function AnimatedSVG ({ animationData }) {
   return (
     <div className="w-full">
-      <Lottie
-        animationData={animationData}
-        loop={true} 
-      />
+      <Lottie animationData={animationData} loop={true} />
     </div>
   );
 };
-
-export default AnimatedSVG;

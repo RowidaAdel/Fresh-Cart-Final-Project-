@@ -2,14 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-export const useAuthApi = ({
-  endpoint,
-  method = 'POST',
-  successMessage,
-  onSuccessCallback,
-  onErrorCallback,
-}) => {
-  return useMutation({
+export const useAuthApi = ({ endpoint, method = 'POST' }) => {
+  const mutation = useMutation({
     mutationFn: async (formData) => {
       const toastId = toast.loading('Processing...');
       try {
@@ -25,13 +19,10 @@ export const useAuthApi = ({
         throw error;
       }
     },
-    onSuccess: (data) => {
-      toast.success(successMessage || 'Success');
-      onSuccessCallback?.(data);
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || 'Something went wrong');
-      onErrorCallback?.(error);
-    },
   });
+
+  return {
+    mutate: mutation.mutate,
+    error: mutation.error,
+  };
 };

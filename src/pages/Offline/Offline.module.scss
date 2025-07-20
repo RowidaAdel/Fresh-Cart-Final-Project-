@@ -1,0 +1,30 @@
+.my10 {
+    margin-block: 8rem;
+    height: 50vh;
+}
+
+@media (max-width: 567px) {
+    .fsp7 {
+        font-size: 1rem !important;
+    }
+}
+
+.woffline {
+    width: 50% !important;
+}
+
+@media(max-width: 991px) {
+    .woffline {
+        width: 60% !important;
+    }
+}
+@media(max-width: 767px) {
+    .woffline {
+        width: 70% !important;
+    }
+}
+@media(max-width: 567px) {
+    .woffline {
+        width: 80% !important;
+    }
+}

@@ -3,24 +3,18 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
-import slider1 from "../../assets/images/slider-image-1.jpeg";
-import slider2 from "../../assets/images/slider-image-2.jpeg";
-import slider3 from "../../assets/images/slider-image-3.jpeg";
-import slider4 from "../../assets/images/grocery-banner-2.jpeg";
-import slider5 from "../../assets/images/slider-2.jpeg";
+import slider1 from "../../assets/images/slider-image-1.webp";
+import slider2 from "../../assets/images/slider-image-2.webp";
+import slider3 from "../../assets/images/slider-image-3.webp";
+import slider4 from "../../assets/images/grocery-banner-2.webp";
+import slider5 from "../../assets/images/slider-2.webp";
 import CategoryBox from "../CategoryBox/CategoryBox";
 
 export default function PrimarySlider() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 items-stretch p-4">
-            {/* Left side - Slider */}
-            <div className="md:col-span-2">
-                <Swiper
-                    modules={[Autoplay, Pagination]}
-                    autoplay={{ delay: 3000 }}
-                    pagination={{ clickable: true }}
-                    loop={true}
-                >
+            <div className="md:col-span-2 w-full">
+                <Swiper className="w-full" modules={[Autoplay, Pagination]} autoplay={{ delay: 3000 }} pagination={{ clickable: true }} loop={true} >
                     <SwiperSlide>
                         <CategoryBox info={{ img: slider1, des: 30, head: "New Groceries Deals", price: "250" }} />
                     </SwiperSlide>
@@ -32,32 +26,20 @@ export default function PrimarySlider() {
                     </SwiperSlide>
                 </Swiper>
             </div>
-            {/* Right side - Slider images */}
-            <div className="flex flex-col">
+            <div className="hidden md:flex flex-col">
                 <div className="relative w-full h-[250px]">
-                    <img
-                        src={slider4}
-                        className="w-full h-full object-cover"
-                        alt="Slider"
-                    />
+                    <img loading="lazy" src={slider4} className="w-full h-full object-cover" alt="Slider" width={80} height={40}/>
                     <div className="absolute top-1/2 -translate-y-1/2 left-4">
                         <h3 className="text-slate-800 text-xl font-bold">Best Bread</h3>
                     </div>
                 </div>
-
                 <div className="relative w-full h-[250px]">
-                    <img
-                        src={slider5}
-                        className="w-full h-full object-cover"
-                        alt="Slider"
-                    />
+                    <img loading="lazy"src={slider5} className="w-full h-full object-cover" alt="Slider" width={80} height={40}/>
                     <div className="absolute top-1/2 -translate-y-1/2 left-4">
                         <h3 className="text-slate-800 text-xl font-bold">Best Vegetables</h3>
                     </div>
                 </div>
             </div>
-
         </div>
-
     );
 }

@@ -1,73 +1,77 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { cartContext } from '../../Context/CartContext';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { removeCartItem, updateCartItem } from "../../Redux/slices/cartSlice";
+import { CircleX } from 'lucide-react';
 
 export default function CartItem({ item }) {
-  let { removeCartItem, updateCartItem, disabledbtn } = useContext(cartContext);
-  let [count, setCount] = useState(item?.count);
+  const dispatch = useDispatch();
+  const disabledbtn = useSelector((state) => state.cart.disabledbtn);
+  const [count, setCount] = useState(item?.count);
 
   useEffect(() => {
     setCount(item?.count);
   }, [item?.count]);
 
-  function updateCounter() {
+  const updateCounter = () => {
     if (+count === item?.count) return;
-    updateCartItem(item.product._id, +count);
-  }
+    dispatch(updateCartItem({ itemId: item.product._id, count: +count }));
+  };
+
+  const getShortTitle = (title) => {
+    if (!title) return '';
+    const words = title.split(' ');
+    return words.slice(0, 3).join(' ') + (words.length > 3 ? '...' : '');
+  };
 
   return (
-    <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-      <img src={item?.product?.imageCover} alt="product-image" className="w-full rounded-lg sm:w-40" />
-      <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-        <div className="mt-5 sm:mt-0">
-          <h2 className="text-lg font-bold text-gray-900">{item?.product?.title}</h2>
-          <p className="mt-1 text-xs text-gray-700">{item?.product?.category?.name}</p>
+    <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-gray-700 rounded-xl shadow-md p-5">
+      {/* Image */}
+      <div className="w-full md:w-24 h-24 rounded-md overflow-hidden flex-shrink-0 border border-gray-500">
+        <img loading='lazy' src={item?.product?.imageCover} alt={item?.product?.title || 'product'} className="w-full h-full object-cover" />
+      </div>
+      {/* Details */}
+      <div className="flex-1 w-full md:px-4 text-center md:text-left">
+        <h2 className="text-lg font-bold text-mainColor dark:text-white">
+          {getShortTitle(item?.product?.title)}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-300">
+          {item?.product?.category?.name} | {item?.product?.brand?.name || 'Brand'} |
+          <span className="text-green-600 ml-1">Available</span>
+        </p>
+        <p className="text-sm text-amber-600 font-semibold mt-1">Rate: ⭐ 4.8</p>
+        <p className="text-sm text-gray-500 font-semibold mt-1">Price:{item?.price} EGP</p>
+      </div>
+      {/* Counter + Total + Delete */}
+      <div className="flex flex-row items-center gap-2">
+        <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
+          <button disabled={disabledbtn} onClick={() => {
+            const newCount = Math.max(+count - 1, 1);
+            setCount(newCount);
+            dispatch(updateCartItem({ itemId: item.product._id, count: newCount }));
+          }}
+            className="px-3 py-1 bg-mainColor text-white hover:bg-hoverColor">
+            -
+          </button>
+          <input type="number" id={`count-${item._id}`} name={`count-${item._id}`} value={count}
+            onChange={(e) => setCount(e.target.value)} onBlur={updateCounter}
+            className="w-12 text-center outline-none border-x dark:text-white border-gray-300 dark:border-gray-600" />
+          <button disabled={disabledbtn}
+            onClick={() => {
+              const newCount = +count + 1;
+              setCount(newCount);
+              dispatch(updateCartItem({ itemId: item.product._id, count: newCount }));
+            }}
+            className="px-3 py-1 bg-mainColor text-white hover:bg-hoverColor">
+            +
+          </button>
         </div>
-        <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-          <div className="flex items-center border-gray-100">
-            <button
-              disabled={disabledbtn}
-              onClick={() => {
-                const newCount = Math.max(+count - 1, 1);
-                setCount(newCount);
-                updateCartItem(item.product._id, newCount);
-              }}
-              className="disabled:cursor-not-allowed cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
-            >
-              -
-            </button>
-            <input
-              className="h-8 w-28 border bg-white text-center text-xs outline-none"
-              type="number"
-              onChange={(e) => setCount(e.target.value)}
-              onBlur={updateCounter}
-              min={1}
-              value={count}
-            />
-            <button
-              disabled={disabledbtn}
-              onClick={() => {
-                const newCount = +count + 1;
-                setCount(newCount);
-                updateCartItem(item.product._id, newCount);
-              }}
-              className="disabled:cursor-not-allowed cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
-            >
-              +
-            </button>
-          </div>
-          <div className="flex items-center space-x-4">
-            <p className="text-sm">${item?.price}</p>
-            <button
-              onClick={() => removeCartItem(item.product._id)}
-              className="btn p-1.5 bg-red-200 hover:bg-red-300"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>Delete</span>
-            </button>
-          </div>
-        </div>
+        <p className="text-md text-mainColor dark:text-white">Total: {item.price * count} EGP</p>
+        <button className="cursor-pointer group order-last max-sm:order-first p-2 rounded-full border-2 border-transparent text-gray-500 hover:text-red-600 hover:border-red-600 transition-transform duration-300 ease-in-out"
+          onClick={() => dispatch(removeCartItem(item.product._id))} aria-label="Remove item"
+          onMouseEnter={e => e.currentTarget.style.transform = 'rotate(90deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(0deg)'}
+          onFocus={e => e.currentTarget.style.transform = 'rotate(90deg)'} onBlur={e => e.currentTarget.style.transform = 'rotate(0deg)'}>
+          <CircleX size={20} />
+        </button>
       </div>
     </div>
   );
