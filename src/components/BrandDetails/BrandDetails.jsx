@@ -45,14 +45,19 @@ export default function BrandDetails() {
   }
 
   return (
-    <div className="bg-slate-200 dark:bg-gray-800">
-      <div className="container py-20">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.map(product => (
-            <ProductCard key={product._id} item={product} />
-          ))}
+    <>
+      <Helmet>
+        <meta name="description" content="Shop products from the most trusted brands details in fashion, tech, and home essentials. Quality you can count on." />
+      </Helmet>
+      <div className="bg-slate-200 dark:bg-gray-800">
+        <div className="container py-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredProducts.map(product => (
+              <ProductCard key={product._id} item={product} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

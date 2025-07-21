@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const token = localStorage.getItem("token");
-
 const initialState = {
   cart: null,
   loading: false,
@@ -11,8 +9,12 @@ const initialState = {
   disabledbtn: false,
 };
 
+// 🛒 Get logged user's cart
 export const getLoggedUserCart = createAsyncThunk('cart/getLoggedUserCart', async (_, thunkAPI) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return thunkAPI.rejectWithValue("Unauthorized");
+
     const { data } = await axios.get('https://ecommerce.routemisr.com/api/v1/cart', {
       headers: { token }
     });
@@ -22,8 +24,12 @@ export const getLoggedUserCart = createAsyncThunk('cart/getLoggedUserCart', asyn
   }
 });
 
+// ➕ Add product to cart
 export const addProductToCart = createAsyncThunk('cart/addProductToCart', async (productId, thunkAPI) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return thunkAPI.rejectWithValue("Unauthorized");
+
     const { data } = await axios.post('https://ecommerce.routemisr.com/api/v1/cart', { productId }, {
       headers: { token }
     });
@@ -35,8 +41,12 @@ export const addProductToCart = createAsyncThunk('cart/addProductToCart', async 
   }
 });
 
+// ❌ Remove product from cart
 export const removeCartItem = createAsyncThunk('cart/removeCartItem', async (itemId, thunkAPI) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return thunkAPI.rejectWithValue("Unauthorized");
+
     const { data } = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${itemId}`, {
       headers: { token }
     });
@@ -48,8 +58,12 @@ export const removeCartItem = createAsyncThunk('cart/removeCartItem', async (ite
   }
 });
 
+// 🧹 Clear cart
 export const clearCart = createAsyncThunk('cart/clearCart', async (_, thunkAPI) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return thunkAPI.rejectWithValue("Unauthorized");
+
     const { data } = await axios.delete('https://ecommerce.routemisr.com/api/v1/cart', {
       headers: { token }
     });
@@ -61,8 +75,12 @@ export const clearCart = createAsyncThunk('cart/clearCart', async (_, thunkAPI) 
   }
 });
 
+// 🔄 Update cart item quantity
 export const updateCartItem = createAsyncThunk('cart/updateCartItem', async ({ itemId, count }, thunkAPI) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return thunkAPI.rejectWithValue("Unauthorized");
+
     thunkAPI.dispatch(setDisabledbtn(true));
     const { data } = await axios.put(
       `https://ecommerce.routemisr.com/api/v1/cart/${itemId}`,

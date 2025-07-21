@@ -6,12 +6,13 @@ import SecondarySlider from '../../components/SecondarySlider/SecondarySlider';
 import useFetch from '../../Hooks/useFetch';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Helmet } from 'react-helmet';
 
 export default function Home() {
   const { data: products, isLoading, isError } = useFetch("products", "allProducts");
 
   useEffect(() => {
-    document.title = "Home";
+    document.title = "FreshCart-Home";
     AOS.init({ duration: 800, once: false, offset: 120, easing: 'ease-in-out' });
   }, []);
 
@@ -40,21 +41,26 @@ export default function Home() {
   }
 
   return (
-<div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh] overflow-hidden'>
-      <div className="py-7 container">
-       <div className="overflow-hidden">
-  <PrimarySlider />
-</div>
-        <SecondarySlider />
-        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-        <h2 className='title' data-aos="zoom-out">Products</h2>
-        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-        <div className="grid grid-cols-1 py-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products?.map((item) => (
-            <ProductCard key={item._id} item={item} />
-          ))}
+    <>
+      <Helmet>
+        <meta name="description" content="Welcome to Fresh Cart! Discover deals on clothing, electronics, and home essentials all in one place." />
+      </Helmet>
+      <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh] overflow-hidden'>
+        <div className="py-7 container">
+          <div className="overflow-hidden">
+            <PrimarySlider />
+          </div>
+          <SecondarySlider />
+          <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+          <h2 className='title' data-aos="zoom-out">Products</h2>
+          <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+          <div className="grid grid-cols-1 py-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {products?.map((item) => (
+              <ProductCard key={item._id} item={item} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

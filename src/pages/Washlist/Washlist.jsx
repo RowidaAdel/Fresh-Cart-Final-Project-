@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { authContext } from "../../Context/authContext";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Helmet } from "react-helmet";
 
 export default function Wishlist() {
   const { wishlist, loading, removeProductFromWishlist } = useContext(WashlistContext);
@@ -62,29 +63,35 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-6">
-      <div className="container">
-        <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-        <h2 className="title" data-aos="fade-up">My Wishlist</h2>
-        <div className="h-px bg-slate-300 dark:bg-slate-500 mb-10" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wishlist.map((item, index) => (
-            <div key={item._id} data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'} >
-              <ProductCard item={item} isWishlist={true} />
-            </div>
-          ))}
-        </div>
-        {wishlist.length > 0 && (
-          <div className="text-center mt-10" data-aos="fade-up">
-            <button onClick={() => { wishlist.forEach((item) => removeProductFromWishlist(item._id));
+    <>
+      <Helmet>
+        <meta name="description" content="Keep track of your favorite products with your wishlist. Save items you love and shop later with ease." />
+      </Helmet>
+      <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-6">
+        <div className="container">
+          <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
+          <h2 className="title" data-aos="fade-up">My Wishlist</h2>
+          <div className="h-px bg-slate-300 dark:bg-slate-500 mb-10" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {wishlist.map((item, index) => (
+              <div key={item._id} data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'} >
+                <ProductCard item={item} isWishlist={true} />
+              </div>
+            ))}
+          </div>
+          {wishlist.length > 0 && (
+            <div className="text-center mt-10" data-aos="fade-up">
+              <button onClick={() => {
+                wishlist.forEach((item) => removeProductFromWishlist(item._id));
                 toast.success("Wishlist cleared!");
               }}
-              className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition" >
-              Clear Wishlist
-            </button>
-          </div>
-        )}
+                className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition" >
+                Clear Wishlist
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

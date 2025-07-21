@@ -12,6 +12,7 @@ import { useContext } from "react";
 import { CreditCard, DollarSign } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Helmet } from "react-helmet";
 
 export default function Checkout() {
   const [loadingCash, setLoadingCash] = useState(false);
@@ -102,83 +103,88 @@ export default function Checkout() {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="formContainer">
-        {/* Right side - Form */}
-        <div className="divForm" data-aos="fade-left">
-          <h2 className="titleForm" data-aos="fade-up">Checkout Now:</h2>
-          <form onSubmit={formik.handleSubmit}>
-            <div>
-              <label htmlFor="city" className="block mb-1">
-                City
-              </label>
-              <input type="text" name="shippingAddress.city" id="city" className="input"
-                value={formik.values.shippingAddress.city} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.shippingAddress?.city &&
-                formik.errors.shippingAddress?.city && (
-                  <p className="formikError">
-                    {formik.errors.shippingAddress.city}
-                  </p>
-                )}
-            </div>
-            <div>
-              <label htmlFor="phone" className="block mb-1">
-                Phone
-              </label>
-              <input type="tel" name="shippingAddress.phone" id="phone" className="input"
-                value={formik.values.shippingAddress.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.shippingAddress?.phone &&
-                formik.errors.shippingAddress?.phone && (
-                  <p className="formikError">
-                    {formik.errors.shippingAddress.phone}
-                  </p>
-                )}
-            </div>
-            <div>
-              <label htmlFor="details" className="block mb-1">
-                Address Details
-              </label>
-              <textarea name="shippingAddress.details" id="details" className="input"
-                value={formik.values.shippingAddress.details} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.shippingAddress?.details &&
-                formik.errors.shippingAddress?.details && (
-                  <p className="formikError">
-                    {formik.errors.shippingAddress.details}
-                  </p>
-                )}
-            </div>
-            {/* Payment Buttons */}
-            <div className="mt-6 flex gap-4">
-              <button type="button" onClick={() => {
-                if (formik.dirty && formik.isValid) {
-                  handleCashOrder();
-                } else {
-                  toast.error("Please fill out the form correctly.");
-                }
-              }}
-                disabled={loadingCash || !formik.dirty || !formik.isValid} className={`loadingBtn ${loadingCash ? "cursor-not-allowed" : "hover:bg-hoverColor"}`}>
-                <DollarSign size={18} />
-                {loadingCash ? "Processing..." : "Pay with Cash"}
-              </button>
-              <button type="button" onClick={() => {
-                if (formik.dirty && formik.isValid) {
-                  handleOnlinePayment();
-                } else {
-                  toast.error("Please fill out the form correctly.");
-                }
-              }} disabled={loadingOnline || !formik.dirty || !formik.isValid}
-                className={`loadingBtn bg-white text-mainColor ${loadingOnline ? "cursor-not-allowed" : "hover:text-white hover:bg-hoverColor"}`} >
-                <CreditCard size={18} />
-                {loadingOnline ? "Processing..." : "Pay Online"}
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* Left side - Image */}
-        <div className="imgSide" data-aos="fade-right">
-          <img loading="lazy" src={checkoutPhoto} alt="Checkout illustration" className="max-w-full h-auto" />
+    <>
+      <Helmet>
+        <meta name="description" content="Complete your first order with Fresh Cart. Fast, secure checkout with trusted payment options." />
+      </Helmet>
+      <div className="flex items-center justify-center">
+        <div className="formContainer">
+          {/* Right side - Form */}
+          <div className="divForm" data-aos="fade-left">
+            <h2 className="titleForm" data-aos="fade-up">Checkout Now:</h2>
+            <form onSubmit={formik.handleSubmit}>
+              <div>
+                <label htmlFor="city" className="block mb-1">
+                  City
+                </label>
+                <input type="text" name="shippingAddress.city" id="city" className="input"
+                  value={formik.values.shippingAddress.city} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                {formik.touched.shippingAddress?.city &&
+                  formik.errors.shippingAddress?.city && (
+                    <p className="formikError">
+                      {formik.errors.shippingAddress.city}
+                    </p>
+                  )}
+              </div>
+              <div>
+                <label htmlFor="phone" className="block mb-1">
+                  Phone
+                </label>
+                <input type="tel" name="shippingAddress.phone" id="phone" className="input"
+                  value={formik.values.shippingAddress.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                {formik.touched.shippingAddress?.phone &&
+                  formik.errors.shippingAddress?.phone && (
+                    <p className="formikError">
+                      {formik.errors.shippingAddress.phone}
+                    </p>
+                  )}
+              </div>
+              <div>
+                <label htmlFor="details" className="block mb-1">
+                  Address Details
+                </label>
+                <textarea name="shippingAddress.details" id="details" className="input"
+                  value={formik.values.shippingAddress.details} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                {formik.touched.shippingAddress?.details &&
+                  formik.errors.shippingAddress?.details && (
+                    <p className="formikError">
+                      {formik.errors.shippingAddress.details}
+                    </p>
+                  )}
+              </div>
+              {/* Payment Buttons */}
+              <div className="mt-6 flex gap-4">
+                <button type="button" onClick={() => {
+                  if (formik.dirty && formik.isValid) {
+                    handleCashOrder();
+                  } else {
+                    toast.error("Please fill out the form correctly.");
+                  }
+                }}
+                  disabled={loadingCash || !formik.dirty || !formik.isValid} className={`loadingBtn ${loadingCash ? "cursor-not-allowed" : "hover:bg-hoverColor"}`}>
+                  <DollarSign size={18} />
+                  {loadingCash ? "Processing..." : "Pay with Cash"}
+                </button>
+                <button type="button" onClick={() => {
+                  if (formik.dirty && formik.isValid) {
+                    handleOnlinePayment();
+                  } else {
+                    toast.error("Please fill out the form correctly.");
+                  }
+                }} disabled={loadingOnline || !formik.dirty || !formik.isValid}
+                  className={`loadingBtn bg-white text-mainColor ${loadingOnline ? "cursor-not-allowed" : "hover:text-white hover:bg-hoverColor"}`} >
+                  <CreditCard size={18} />
+                  {loadingOnline ? "Processing..." : "Pay Online"}
+                </button>
+              </div>
+            </form>
+          </div>
+          {/* Left side - Image */}
+          <div className="imgSide" data-aos="fade-right">
+            <img loading="lazy" src={checkoutPhoto} alt="Checkout illustration" className="max-w-full h-auto" />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

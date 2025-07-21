@@ -8,6 +8,7 @@ import registerPhoto from '../../../assets/images/register.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useAuthApi } from '../../../Hooks/useAuthApi';
+import { Helmet } from 'react-helmet';
 
 export default function Register() {
   useEffect(() => {
@@ -66,90 +67,95 @@ export default function Register() {
   });
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="formContainer">
-        {/* Left side - Image */}
-        <div className="imgSide">
-          <img src={registerPhoto} alt="Register Illustration" loading='lazy' className="max-w-full h-auto" />
-        </div>
-        {/* Right side - Register Form */}
-        <div className="divForm">
-          <h2 className="titleForm">Register Now:</h2>
-          {error && <h3 className="error">{error}</h3>}
-          <form onSubmit={formik.handleSubmit}>
-            {/* Name */}
-            <div>
-              <label htmlFor="name">Name</label>
-              <input id="name" autoComplete="name" type="text" name="name"
-                value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              {formik.errors.name && formik.touched.name && (
-                <p className="formikError">{formik.errors.name}</p>
-              )}
-            </div>
-            {/* Email */}
-            <div>
-              <label htmlFor="email">Email</label>
-              <input id="email" autoComplete="email" type="email" name="email"
-                value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              {formik.errors.email && formik.touched.email && (
-                <p className="formikError">{formik.errors.email}</p>
-              )}
-            </div>
-            {/* Password */}
-            <div className="relative">
-              <label htmlFor="password">Password</label>
-              <input id="password" autoComplete="new-password" type={showPass ? "text" : "password"} name="password"
-                value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              <div className="eye" onClick={toggleShowPass}>
-                {showPass ? <EyeOff /> : <Eye />}
-              </div>
-              {formik.errors.password && formik.touched.password && (
-                <p className="formikError">{formik.errors.password}</p>
-              )}
-            </div>
-            {/* Re-Password */}
-            <div className="relative">
-              <label htmlFor="rePassword">Re-Password</label>
-              <input id="rePassword" autoComplete="new-password" type={showRePass ? "text" : "password"} name="rePassword"
-                value={formik.values.rePassword} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              <div className="eye" onClick={toggleShowRePass}>
-                {showRePass ? <EyeOff /> : <Eye />}
-              </div>
-              {formik.errors.rePassword && formik.touched.rePassword && (
-                <p className="formikError">{formik.errors.rePassword}</p>
-              )}
-            </div>
-            {/* Phone */}
-            <div>
-              <label htmlFor="phone">Phone</label>
-              <input id="phone" autoComplete="tel" type="tel" name="phone"
-                value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              {formik.errors.phone && formik.touched.phone && (
-                <p className="formikError">{formik.errors.phone}</p>
-              )}
-            </div>
-            {/* Submit Button */}
-            <div className="flex justify-end">
-              <button id="registerBtn" name="registerBtn" autoComplete="off" type="submit" disabled={loading}
-                className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
-                {loading ? (
-                  <>
-                    Loading
-                    <FontAwesomeIcon icon={faSpinner} spin />
-                  </>
-                ) : (
-                  'Register'
+    <>
+      <Helmet>
+        <meta name="description" content="Create a new account on Fresh Cart to start shopping your favorite fashion, electronics, and more with ease." />
+      </Helmet>
+      <div className="flex items-center justify-center">
+        <div className="formContainer">
+          {/* Left side - Image */}
+          <div className="imgSide">
+            <img src={registerPhoto} alt="Register Illustration" loading='lazy' className="max-w-full h-auto" />
+          </div>
+          {/* Right side - Register Form */}
+          <div className="divForm">
+            <h2 className="titleForm">Register Now:</h2>
+            {error && <h3 className="error">{error}</h3>}
+            <form onSubmit={formik.handleSubmit}>
+              {/* Name */}
+              <div>
+                <label htmlFor="name">Name</label>
+                <input id="name" autoComplete="name" type="text" name="name"
+                  value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                {formik.errors.name && formik.touched.name && (
+                  <p className="formikError">{formik.errors.name}</p>
                 )}
-              </button>
-            </div>
-            {/* Link */}
-            <p className="text-center mt-2">
-              I have an account
-              <Link to="/login" className="text-mainColor font-semibold ml-1">Login</Link>
-            </p>
-          </form>
+              </div>
+              {/* Email */}
+              <div>
+                <label htmlFor="email">Email</label>
+                <input id="email" autoComplete="email" type="email" name="email"
+                  value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                {formik.errors.email && formik.touched.email && (
+                  <p className="formikError">{formik.errors.email}</p>
+                )}
+              </div>
+              {/* Password */}
+              <div className="relative">
+                <label htmlFor="password">Password</label>
+                <input id="password" autoComplete="new-password" type={showPass ? "text" : "password"} name="password"
+                  value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                <div className="eye" onClick={toggleShowPass}>
+                  {showPass ? <EyeOff /> : <Eye />}
+                </div>
+                {formik.errors.password && formik.touched.password && (
+                  <p className="formikError">{formik.errors.password}</p>
+                )}
+              </div>
+              {/* Re-Password */}
+              <div className="relative">
+                <label htmlFor="rePassword">Re-Password</label>
+                <input id="rePassword" autoComplete="new-password" type={showRePass ? "text" : "password"} name="rePassword"
+                  value={formik.values.rePassword} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                <div className="eye" onClick={toggleShowRePass}>
+                  {showRePass ? <EyeOff /> : <Eye />}
+                </div>
+                {formik.errors.rePassword && formik.touched.rePassword && (
+                  <p className="formikError">{formik.errors.rePassword}</p>
+                )}
+              </div>
+              {/* Phone */}
+              <div>
+                <label htmlFor="phone">Phone</label>
+                <input id="phone" autoComplete="tel" type="tel" name="phone"
+                  value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                {formik.errors.phone && formik.touched.phone && (
+                  <p className="formikError">{formik.errors.phone}</p>
+                )}
+              </div>
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <button id="registerBtn" name="registerBtn" autoComplete="off" type="submit" disabled={loading}
+                  className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
+                  {loading ? (
+                    <>
+                      Loading
+                      <FontAwesomeIcon icon={faSpinner} spin />
+                    </>
+                  ) : (
+                    'Register'
+                  )}
+                </button>
+              </div>
+              {/* Link */}
+              <p className="text-center mt-2">
+                I have an account
+                <Link to="/login" className="text-mainColor font-semibold ml-1">Login</Link>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

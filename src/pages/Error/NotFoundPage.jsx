@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MessageCircle, House, Mail, Phone, Search } from "lucide-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Helmet } from "react-helmet";
 
 export default function Notfound() {
   useEffect(() => {
@@ -13,6 +14,9 @@ export default function Notfound() {
 
   return (
     <>
+      <Helmet>
+        <meta name="description" content="Oops! The page you're looking for doesn't exist. Go back to the homepage and keep shopping on Fresh Cart." />
+      </Helmet>
       <section className="notfound py-25 flex justify-center text-center items-center flex-col container">
         <h2 className="text-stone-950 text-6xl font-extrabold dark:text-white" data-aos="zoom-out">Oops! Page Not Found</h2>
         <img src={notFound} alt="404" loading="lazy" />

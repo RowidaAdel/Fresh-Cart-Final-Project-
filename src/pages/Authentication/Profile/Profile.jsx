@@ -4,6 +4,7 @@ import { User, Mail } from 'lucide-react';
 import profilePhoto from '../../../assets/images/profile.webp';
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Helmet } from 'react-helmet';
 
 export default function Profile() {
   const [userProfile, setUserProfile] = useState(null);
@@ -34,45 +35,50 @@ export default function Profile() {
   const firstTwoWords = fullName.split(' ').slice(0, 2).join(' ');
 
   return (
-    <div className="flex items-center justify-center dark:bg-slate-800">
-      <div className="container py-25 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 ">
-        {/* Left side - Account Image */}
-        <div className="w-full md:w-1/3 flex justify-center" data-aos="fade-right">
-          <img src={profilePhoto} loading='lazy' alt="profile" className="max-w-full h-auto rounded-full shadow-md" />
-        </div>
-        {/* Right side - Account Details */}
-        <div className="divForm">
-          <h2 className="title" data-aos="fade-up"><span className='text-slate-950 dark:text-amber-50'>Hello </span>{firstTwoWords}</h2>
-          <form className="space-y-6 dark:text-slate-200" data-aos="fade-leftt">
-            {/* Full Name */}
-            <div>
-              <label htmlFor="fullName" className="block mb-1 text-lg">Full Name</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                  <User size={20} />
-                </span>
-                <input type="text" id="fullName" value={fullName} disabled className="input pl-10" />
+    <>
+      <Helmet>
+        <meta name="description" content="View and update your personal details, order history, and preferences on your Fresh Cart profile." />
+      </Helmet>
+      <div className="flex items-center justify-center dark:bg-slate-800">
+        <div className="container py-25 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 ">
+          {/* Left side - Account Image */}
+          <div className="w-full md:w-1/3 flex justify-center" data-aos="fade-right">
+            <img src={profilePhoto} loading='lazy' alt="profile" className="max-w-full h-auto rounded-full shadow-md" />
+          </div>
+          {/* Right side - Account Details */}
+          <div className="divForm">
+            <h2 className="title" data-aos="fade-up"><span className='text-slate-950 dark:text-amber-50'>Hello </span>{firstTwoWords}</h2>
+            <form className="space-y-6 dark:text-slate-200" data-aos="fade-leftt">
+              {/* Full Name */}
+              <div>
+                <label htmlFor="fullName" className="block mb-1 text-lg">Full Name</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                    <User size={20} />
+                  </span>
+                  <input type="text" id="fullName" value={fullName} disabled className="input pl-10" />
+                </div>
               </div>
-            </div>
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block mb-1 text-lg">Email Address</label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                  <Mail size={20} />
-                </span>
-                <input type="email" id="email" value={email} disabled className="input pl-10" />
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block mb-1 text-lg">Email Address</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                    <Mail size={20} />
+                  </span>
+                  <input type="email" id="email" value={email} disabled className="input pl-10" />
+                </div>
               </div>
-            </div>
-            {/* Reset Password Button */}
-            <div className="flex justify-end">
-              <Link to="/forget" className="submitBtn" >
-                Reset Password
-              </Link>
-            </div>
-          </form>
+              {/* Reset Password Button */}
+              <div className="flex justify-end">
+                <Link to="/forget" className="submitBtn" >
+                  Reset Password
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

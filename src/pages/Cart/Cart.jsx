@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getLoggedUserCart } from "../../Redux/slices/cartSlice";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Helmet } from "react-helmet";
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -54,41 +55,46 @@ export default function Cart() {
   }
 
   return (
-    <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-10">
-      <div className="container">
-        {/* Total Summary Card */}
-        <div data-aos="zoom-out" className="bg-white dark:bg-gray-700 border border-mainColor shadow-lg p-4 rounded-2xl max-w-sm mx-auto mb-8 text-center">
-          <h3 className="text-lg font-medium text-gray-700 dark:text-gray-100">
-            <i className="fa-solid fa-sack-dollar me-2 text-mainColor"></i>
-            Total Price:{" "}
-            <span className="text-mainColor font-bold">{totalCartPrice} EGP</span>
-          </h3>
-          <h4 className="text-md mt-2 font-medium text-gray-600 dark:text-gray-300">
-            Total Items: {numOfCartItems}
-          </h4>
-        </div>
-        {/* Cart Items */}
-        <div className="cart-items mt-5 grid grid-cols-1 gap-5">
-          {products.map((product, index) => (
-            <div data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'} key={product._id}>
-              <CartItem item={product} />
-            </div>
-          ))}
-        </div>
-        {/* Buttons */}
-        <div className="mt-10 flex flex-col sm:flex-row justify-between gap-4">
-          <button onClick={() => dispatch(clearCart())} className="btn gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl flex-1 sm:flex-none">
-            Clear Cart
-            <Trash />
-          </button>
-          <Link to="/checkout" className="flex-1 sm:flex-none">
-            <button className="btn bg-green-600 hover:bg-green-800 text-white px-6 py-3 rounded-xl w-full sm:w-auto">
-              Next Step (Payment)
-              <ArrowBigRightDash />
+    <>
+      <Helmet>
+        <meta name="description" content="Review the items in your cart and proceed to secure checkout. Fast delivery and great deals await at Fresh Cart." />
+      </Helmet>
+      <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-10">
+        <div className="container">
+          {/* Total Summary Card */}
+          <div data-aos="zoom-out" className="bg-white dark:bg-gray-700 border border-mainColor shadow-lg p-4 rounded-2xl max-w-sm mx-auto mb-8 text-center">
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-100">
+              <i className="fa-solid fa-sack-dollar me-2 text-mainColor"></i>
+              Total Price:{" "}
+              <span className="text-mainColor font-bold">{totalCartPrice} EGP</span>
+            </h3>
+            <h4 className="text-md mt-2 font-medium text-gray-600 dark:text-gray-300">
+              Total Items: {numOfCartItems}
+            </h4>
+          </div>
+          {/* Cart Items */}
+          <div className="cart-items mt-5 grid grid-cols-1 gap-5">
+            {products.map((product, index) => (
+              <div data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'} key={product._id}>
+                <CartItem item={product} />
+              </div>
+            ))}
+          </div>
+          {/* Buttons */}
+          <div className="mt-10 flex flex-col sm:flex-row justify-between gap-4">
+            <button onClick={() => dispatch(clearCart())} className="btn gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl flex-1 sm:flex-none">
+              Clear Cart
+              <Trash />
             </button>
-          </Link>
+            <Link to="/checkout" className="flex-1 sm:flex-none">
+              <button className="btn bg-green-600 hover:bg-green-800 text-white px-6 py-3 rounded-xl w-full sm:w-auto">
+                Next Step (Payment)
+                <ArrowBigRightDash />
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

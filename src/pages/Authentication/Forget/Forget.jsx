@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Helmet } from 'react-helmet';
 
 export default function Forget() {
   useEffect(() => {
@@ -52,43 +53,48 @@ export default function Forget() {
   });
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="formContainer">
-        {/* Right side - Forget Form */}
-        <div className="divForm" data-aos="fade-left">
-          <h2 className="titleForm" data-aos="fade-up">Forgot Password?</h2>
-          {error && <h3 className='error'>{error}</h3>}
-          <form onSubmit={formik.handleSubmit}>
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block mb-1">Email</label>
-              <input id="email" autoComplete="email" type="email" name="email"
-                value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
-              {formik.errors.email && formik.touched.email && (
-                <p className="formikError">{formik.errors.email}</p>
-              )}
-            </div>
-            {/* Submit Button */}
-            <div className="flex justify-end">
-              <button id="forgetBtn" name="forgetBtn" autoComplete="off" type="submit" disabled={loading}
-                className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
-                {loading ? (
-                  <>
-                    Sending
-                    <FontAwesomeIcon icon={faSpinner} spin />
-                  </>
-                ) : (
-                  'Next'
+    <>
+      <Helmet>
+        <meta name="description" content="Forgot your password? Reset it easily and securely to regain access to your Fresh Cart account." />
+      </Helmet>
+      <div className="flex items-center justify-center">
+        <div className="formContainer">
+          {/* Right side - Forget Form */}
+          <div className="divForm" data-aos="fade-left">
+            <h2 className="titleForm" data-aos="fade-up">Forgot Password?</h2>
+            {error && <h3 className='error'>{error}</h3>}
+            <form onSubmit={formik.handleSubmit}>
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block mb-1">Email</label>
+                <input id="email" autoComplete="email" type="email" name="email"
+                  value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} className="input" />
+                {formik.errors.email && formik.touched.email && (
+                  <p className="formikError">{formik.errors.email}</p>
                 )}
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* Left side - Image */}
-        <div className="imgSide" data-aos="fade-right">
-          <img src={ForgotPasswordPhoto} loading='lazy' alt="Forget illustration" className="max-w-full h-auto" />
+              </div>
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <button id="forgetBtn" name="forgetBtn" autoComplete="off" type="submit" disabled={loading}
+                  className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
+                  {loading ? (
+                    <>
+                      Sending
+                      <FontAwesomeIcon icon={faSpinner} spin />
+                    </>
+                  ) : (
+                    'Next'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+          {/* Left side - Image */}
+          <div className="imgSide" data-aos="fade-right">
+            <img src={ForgotPasswordPhoto} loading='lazy' alt="Forget illustration" className="max-w-full h-auto" />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
