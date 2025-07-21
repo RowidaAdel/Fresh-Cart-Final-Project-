@@ -154,7 +154,7 @@ export default function Checkout() {
               </div>
               {/* Payment Buttons */}
               <div className="mt-6 flex gap-4">
-                <button type="button" onClick={() => {
+                <button aria-label="pay cash" type="button" onClick={() => {
                   if (formik.dirty && formik.isValid) {
                     handleCashOrder();
                   } else {
@@ -165,7 +165,7 @@ export default function Checkout() {
                   <DollarSign size={18} />
                   {loadingCash ? "Processing..." : "Pay with Cash"}
                 </button>
-                <button type="button" onClick={() => {
+                <button aria-label="pay online" type="button" onClick={() => {
                   if (formik.dirty && formik.isValid) {
                     handleOnlinePayment();
                   } else {

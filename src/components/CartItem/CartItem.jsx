@@ -44,7 +44,7 @@ export default function CartItem({ item }) {
       {/* Counter + Total + Delete */}
       <div className="flex flex-row items-center gap-2">
         <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
-          <button disabled={disabledbtn} onClick={() => {
+          <button aria-label="decreament" disabled={disabledbtn} onClick={() => {
             const newCount = Math.max(+count - 1, 1);
             setCount(newCount);
             dispatch(updateCartItem({ itemId: item.product._id, count: newCount }));
@@ -55,8 +55,7 @@ export default function CartItem({ item }) {
           <input type="number" id={`count-${item._id}`} name={`count-${item._id}`} value={count}
             onChange={(e) => setCount(e.target.value)} onBlur={updateCounter}
             className="w-12 text-center outline-none border-x dark:text-white border-gray-300 dark:border-gray-600" />
-          <button disabled={disabledbtn}
-            onClick={() => {
+          <button aria-label="increament" disabled={disabledbtn} onClick={() => {
               const newCount = +count + 1;
               setCount(newCount);
               dispatch(updateCartItem({ itemId: item.product._id, count: newCount }));

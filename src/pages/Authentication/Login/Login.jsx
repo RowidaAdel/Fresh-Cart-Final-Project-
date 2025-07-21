@@ -99,7 +99,7 @@ export default function Login() {
                 )}
               </div>
               {/* Submit */}
-              <button id="loginBtn" name="loginBtn" type="submit" disabled={loading} autoComplete="off"
+              <button aria-label="login" id="loginBtn" name="loginBtn" type="submit" disabled={loading} autoComplete="off"
                 className={`loadingBtn ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hoverColor'}`}>
                 {loading ? (
                   <>

@@ -49,7 +49,7 @@ export default function Products() {
           {pagination && pagination.numberOfPages > 1 && (
             <div className="flex my-5 justify-center items-center gap-2 flex-wrap">
               {[...Array(pagination.numberOfPages)].map((_, index) => (
-                <button key={index} onClick={() => setCurrentPage(index + 1)}
+                <button key={index} onClick={() => setCurrentPage(index + 1)} aria-label="page"
                   className={`btn px-4 py-2 rounded-md ${currentPage === index + 1 ? 'bg-mainColor text-white' : 'bg-white text-mainColor border'}`}>
                   {index + 1}
                 </button>

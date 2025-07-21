@@ -75,7 +75,7 @@ export default function Forget() {
               </div>
               {/* Submit Button */}
               <div className="flex justify-end">
-                <button id="forgetBtn" name="forgetBtn" autoComplete="off" type="submit" disabled={loading}
+                <button aria-label="Next" id="forgetBtn" name="forgetBtn" autoComplete="off" type="submit" disabled={loading}
                   className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
                   {loading ? (
                     <>

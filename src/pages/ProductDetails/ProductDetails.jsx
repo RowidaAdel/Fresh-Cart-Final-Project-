@@ -128,11 +128,11 @@ export default function ProductDetails() {
                                     <span className="text-red-600 font-semibold text-sm line-through">${product.price + 300}</span>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                                    <button isabled={isDisabled} onClick={handleBuyNow}
+                                    <button isabled={isDisabled} onClick={handleBuyNow} aria-label="Buy Now"
                                         className={`flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         Buy Now
                                     </button>
-                                    <button disabled={isDisabled} onClick={() => dispatch(addProductToCart(product._id))}
+                                    <button disabled={isDisabled} onClick={() => dispatch(addProductToCart(product._id))} aria-label="Add to cart"
                                         className={`flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         Add to Cart
                                     </button>

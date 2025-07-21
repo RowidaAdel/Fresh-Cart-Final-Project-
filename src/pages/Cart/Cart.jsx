@@ -82,12 +82,12 @@ export default function Cart() {
           </div>
           {/* Buttons */}
           <div className="mt-10 flex flex-col sm:flex-row justify-between gap-4">
-            <button onClick={() => dispatch(clearCart())} className="btn gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl flex-1 sm:flex-none">
+            <button aria-label="Clear Cart" onClick={() => dispatch(clearCart())} className="btn gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl flex-1 sm:flex-none">
               Clear Cart
               <Trash />
             </button>
             <Link to="/checkout" className="flex-1 sm:flex-none">
-              <button className="btn bg-green-600 hover:bg-green-800 text-white px-6 py-3 rounded-xl w-full sm:w-auto">
+              <button aria-label="Next Step" className="btn bg-green-600 hover:bg-green-800 text-white px-6 py-3 rounded-xl w-full sm:w-auto">
                 Next Step (Payment)
                 <ArrowBigRightDash />
               </button>

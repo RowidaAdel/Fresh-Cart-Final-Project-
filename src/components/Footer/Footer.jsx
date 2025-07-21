@@ -51,7 +51,7 @@ export default function Footer() {
             autoComplete="email"
             className="w-full sm:flex-1 px-2 py-3 rounded-md focus:outline-none border-2 border-slate-200 bg-white"
           />
-          <button className="btn bg-mainColor text-lg text-white hover:bg-hoverColor px-6 py-3 rounded-md">
+          <button aria-label="Share App Link" className="btn bg-mainColor text-lg text-white hover:bg-hoverColor px-6 py-3 rounded-md">
             Share App Link
           </button>
         </motion.div>

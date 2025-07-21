@@ -81,7 +81,7 @@ export default function Wishlist() {
           </div>
           {wishlist.length > 0 && (
             <div className="text-center mt-10" data-aos="fade-up">
-              <button onClick={() => {
+              <button aria-label="Clear Wishlist" onClick={() => {
                 wishlist.forEach((item) => removeProductFromWishlist(item._id));
                 toast.success("Wishlist cleared!");
               }}

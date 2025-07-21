@@ -153,10 +153,10 @@ export default function Navbar({ toggletheme, theme }) {
                     )}
                 </ul>
                 <div className='flex items-center gap-4 lg:hidden'>
-                    <button onClick={toggletheme} className='cursor-pointer'>
+                    <button aria-label="Staus Mood" onClick={toggletheme} className='cursor-pointer'>
                         {theme === 'light' ? <Moon /> : <Sun />}
                     </button>
-                    <button onClick={toggleMobileMenu} className='cursor-pointer'>
+                    <button aria-label="Menu item" onClick={toggleMobileMenu} className='cursor-pointer'>
                         {isMenuOpen ? <X /> : <Menu />}
                     </button>
                 </div>

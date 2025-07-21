@@ -95,7 +95,7 @@ export default function ResetPassword() {
               </div>
               {/* Submit Button */}
               <div className="flex justify-end">
-                <button id="resetPasswordBtn" name="resetPasswordBtn" autoComplete="off" type="submit" disabled={loading}
+                <button aria-label="Reset Password" id="resetPasswordBtn" name="resetPasswordBtn" autoComplete="off" type="submit" disabled={loading}
                   className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`} >
                   {loading ? (
                     <>

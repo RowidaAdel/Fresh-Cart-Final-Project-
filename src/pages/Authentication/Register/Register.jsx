@@ -135,7 +135,7 @@ export default function Register() {
               </div>
               {/* Submit Button */}
               <div className="flex justify-end">
-                <button id="registerBtn" name="registerBtn" autoComplete="off" type="submit" disabled={loading}
+                <button aria-label="Register" id="registerBtn" name="registerBtn" autoComplete="off" type="submit" disabled={loading}
                   className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
                   {loading ? (
                     <>

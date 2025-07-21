@@ -84,7 +84,7 @@ export default function VerifyCode() {
               </div>
               {/* Submit Button */}
               <div className="flex justify-end">
-                <button id="verifyBtn" name="verifyBtn" autoComplete="off" type="submit" disabled={loading}
+                <button aria-label="Next" id="verifyBtn" name="verifyBtn" autoComplete="off" type="submit" disabled={loading}
                   className={`loadingBtn ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-hoverColor'}`}>
                   {loading ? (
                     <>
