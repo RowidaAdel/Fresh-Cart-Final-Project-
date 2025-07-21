@@ -12,9 +12,9 @@ import CategoryBox from "../CategoryBox/CategoryBox";
 
 export default function PrimarySlider() {
     return (
-<div className="grid grid-cols-1 md:grid-cols-3 items-stretch p-4 overflow-hidden">
-            <div className="md:col-span-2 w-full">
-                <Swiper className="w-full" modules={[Autoplay, Pagination]} autoplay={{ delay: 3000 }} pagination={{ clickable: true }} loop={true} >
+        <div className="grid grid-cols-1 md:grid-cols-3 items-stretch p-4 overflow-hidden">
+            <div className="md:col-span-2 w-full h-[500px]">
+                <Swiper className="w-full h-full" modules={[Autoplay, Pagination]} autoplay={{ delay: 3000 }} pagination={{ clickable: true }} loop={true}>
                     <SwiperSlide>
                         <CategoryBox info={{ img: slider1, des: 30, head: "New Groceries Deals", price: "250" }} />
                     </SwiperSlide>
@@ -28,13 +28,13 @@ export default function PrimarySlider() {
             </div>
             <div className="hidden md:flex flex-col">
                 <div className="relative w-full h-[250px]">
-                    <img loading="lazy" src={slider4} className="relative w-full h-[150px] sm:h-[200px] md:h-[250px]" alt="Slider" width={80} height={40}/>
+                    <img src={slider4} className="w-full h-full object-cover" alt="Slider" />
                     <div className="absolute top-1/2 -translate-y-1/2 left-4">
                         <h3 className="text-slate-800 text-xl font-bold">Best Bread</h3>
                     </div>
                 </div>
                 <div className="relative w-full h-[250px]">
-                    <img loading="lazy"src={slider5} className="relative w-full h-[150px] sm:h-[200px] md:h-[250px]" alt="Slider" width={80} height={40}/>
+                    <img src={slider5} className="w-full h-full object-cover" alt="Slider" />
                     <div className="absolute top-1/2 -translate-y-1/2 left-4">
                         <h3 className="text-slate-800 text-xl font-bold">Best Vegetables</h3>
                     </div>
