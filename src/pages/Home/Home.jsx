@@ -40,9 +40,11 @@ export default function Home() {
   }
 
   return (
-    <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh]'>
+<div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh] overflow-hidden'>
       <div className="py-7 container">
-        <PrimarySlider />
+       <div className="overflow-hidden">
+  <PrimarySlider />
+</div>
         <SecondarySlider />
         <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
         <h2 className='title' data-aos="zoom-out">Products</h2>
