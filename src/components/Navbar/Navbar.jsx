@@ -10,7 +10,7 @@ import MobileMenu from '../MobileMenu/MobileMenu';
 import { WashlistContext } from '../../Context/washListContext';
 import { motion } from "framer-motion";
 
-export default function Navbar({ toggletheme, theme }) {
+function Navbar({ toggletheme, theme }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [shrink, setShrink] = useState(false);
     const navigate = useNavigate();
@@ -167,3 +167,4 @@ export default function Navbar({ toggletheme, theme }) {
         </motion.div>
     );
 }
+export default React.memo(Navbar);

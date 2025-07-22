@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import Loading from '../../components/Loading/Loading';
-import PrimarySlider from '../../components/PrimarySlider/PrimarySlider';
-import SecondarySlider from '../../components/SecondarySlider/SecondarySlider';
 import useFetch from '../../Hooks/useFetch';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Helmet } from 'react-helmet';
+
+// Lazy Load Sliders
+const PrimarySlider = lazy(() => import('../../components/PrimarySlider/PrimarySlider'));
+const SecondarySlider = lazy(() => import('../../components/SecondarySlider/SecondarySlider'));
 
 export default function Home() {
   const { data: products, isLoading, isError } = useFetch("products", "allProducts");
@@ -48,9 +50,13 @@ export default function Home() {
       <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh] overflow-hidden'>
         <div className="py-7 container">
           <div className="overflow-hidden">
-            <PrimarySlider />
+            <Suspense fallback={<div>Loading slider...</div>}>
+              <PrimarySlider />
+            </Suspense>
           </div>
-          <SecondarySlider />
+          <Suspense fallback={<div>Loading slider...</div>}>
+            <SecondarySlider />
+          </Suspense>
           <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
           <h2 className='title' data-aos="zoom-out">Products</h2>
           <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />

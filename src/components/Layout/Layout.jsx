@@ -26,7 +26,7 @@ export default function Layout() {
   useEffect(() => {
     if (is3DPage) {
       setShowPage(false);
-      const timeout = setTimeout(() => setShowPage(true), 800);
+      const timeout = setTimeout(() => setShowPage(true), 50);
       return () => clearTimeout(timeout);
     } else {
       setShowPage(true);

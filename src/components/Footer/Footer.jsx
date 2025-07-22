@@ -25,7 +25,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 }
 };
 
-export default function Footer() {
+ function Footer() {
   return (
     <motion.footer
       className="bg-gray-300 dark:bg-slate-900 py-10 min-h-[350px] relative overflow-hidden"
@@ -77,3 +77,4 @@ export default function Footer() {
     </motion.footer>
   );
 }
+export default React.memo(Footer);
