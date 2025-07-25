@@ -13,18 +13,22 @@ import { addProductToCart } from '../../Redux/slices/cartSlice';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Helmet } from 'react-helmet';
+import { useWishlistQuery } from '../../Hooks/useWishlistQuery';
 
 export default function ProductDetails() {
     const dispatch = useDispatch();
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { addProductToWishlist, removeProductFromWishlist, wishlist, getLoggedUserWishlist } = useContext(WashlistContext);
+    const { addProductToWishlist, removeProductFromWishlist } = useContext(WashlistContext);
+    const { data: wishlistData } = useWishlistQuery();
+
     const [product, setProduct] = useState(null);
     const [related, setRelated] = useState([]);
     const [loading, setLoading] = useState(false);
+
     const isDisabled = loading || !product;
-    const isInWishlist = product && wishlist?.some(item => item._id === product._id);
+    const isInWishlist = product && wishlistData?.some(item => item._id === product._id);
 
     useEffect(() => {
         document.title = 'Product Details';
@@ -66,7 +70,6 @@ export default function ProductDetails() {
         } else {
             await addProductToWishlist(product._id);
         }
-        await getLoggedUserWishlist();
     };
 
     const handleBuyNow = async () => {
@@ -74,12 +77,13 @@ export default function ProductDetails() {
         navigate('/checkout');
     };
 
-    if (loading || !product)
+    if (loading || !product) {
         return (
             <div className="loading bg-slate-200 dark:bg-gray-800">
                 <Loading />
             </div>
-        )
+        );
+    }
 
     return (
         <>
@@ -128,7 +132,7 @@ export default function ProductDetails() {
                                     <span className="text-red-600 font-semibold text-sm line-through">${product.price + 300}</span>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                                    <button isabled={isDisabled} onClick={handleBuyNow} aria-label="Buy Now"
+                                    <button disabled={isDisabled} onClick={handleBuyNow} aria-label="Buy Now"
                                         className={`flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                         Buy Now
                                     </button>

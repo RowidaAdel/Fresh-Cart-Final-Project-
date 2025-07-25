@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { ShoppingCart, Eye } from 'lucide-react';
 import { Link } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { addProductToCart } from '../../Redux/slices/cartSlice';
 import { WashlistContext } from '../../Context/washListContext';
+import { useWishlistQuery } from '../../Hooks/useWishlistQuery';
 
 export default function ProductCard({ item, isWishlist = false }) {
     if (!item || !item.imageCover || !item.title || !item.category || !item.brand) {
@@ -11,19 +12,19 @@ export default function ProductCard({ item, isWishlist = false }) {
     }
 
     const dispatch = useDispatch();
-    const { addProductToWishlist, wishlistLike, removeProductFromWishlist, getLoggedUserWishlist } = useContext(WashlistContext);
-
-    useEffect(() => {
-        getLoggedUserWishlist();
-    }, []);
+    const { addProductToWishlist, removeProductFromWishlist } = React.useContext(WashlistContext);
+    const { data: wishlistData } = useWishlistQuery();
 
     const isInWishlist =
-        Array.isArray(wishlistLike) &&
-        wishlistLike.some((product) => product && product._id === item._id);
+        Array.isArray(wishlistData) &&
+        wishlistData.some((product) => product && product._id === item._id);
 
     function handleWishlistAction() {
         if (isInWishlist) {
-            removeProductFromWishlist(item._id);
+            const event = new CustomEvent('remove-from-wishlist', {
+                detail: item._id,
+            });
+            window.dispatchEvent(event);
         } else {
             addProductToWishlist(item._id);
         }

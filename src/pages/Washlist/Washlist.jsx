@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { WashlistContext } from "../../Context/washListContext";
 import { Heart } from "lucide-react";
 import AnimatedSVG from "../../components/AnimateSvg/AnimateSvg";
@@ -11,15 +11,34 @@ import { authContext } from "../../Context/authContext";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Helmet } from "react-helmet";
+import { useWishlistQuery } from "../../Hooks/useWishlistQuery";
 
 export default function Wishlist() {
-  const { wishlist, loading, removeProductFromWishlist, getLoggedUserWishlist } = useContext(WashlistContext);
+  const { data: wishlist, isLoading, isError } = useWishlistQuery();
+  const { removeProductFromWishlist } = useContext(WashlistContext);
   const { token } = useContext(authContext);
+
+  const [removingItems, setRemovingItems] = useState([]);
 
   useEffect(() => {
     document.title = "Wishlist";
     AOS.init({ duration: 200, once: true });
-    getLoggedUserWishlist()
+  }, []);
+
+  useEffect(() => {
+    function handleRemoveWishlist(e) {
+      const id = e.detail;
+      setRemovingItems((prev) => [...prev, id]);
+      setTimeout(() => {
+        removeProductFromWishlist(id);
+        setRemovingItems((prev) => prev.filter((itemId) => itemId !== id));
+      }, 300);
+    }
+
+    window.addEventListener("remove-from-wishlist", handleRemoveWishlist);
+    return () => {
+      window.removeEventListener("remove-from-wishlist", handleRemoveWishlist);
+    };
   }, []);
 
   if (!token) {
@@ -30,12 +49,20 @@ export default function Wishlist() {
     );
   }
 
-   if (loading) {
+  if (isLoading) {
     return (
       <div className="loading bg-slate-200 dark:bg-gray-800 min-h-[80vh] flex justify-center items-center">
         <Loading />
       </div>
-    )
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <p className="text-red-500">Error loading wishlist</p>
+      </div>
+    );
   }
 
   if (!wishlist || wishlist.length === 0) {
@@ -61,7 +88,10 @@ export default function Wishlist() {
   return (
     <>
       <Helmet>
-        <meta name="description" content="Keep track of your favorite products with your wishlist. Save items you love and shop later with ease." />
+        <meta
+          name="description"
+          content="Keep track of your favorite products with your wishlist. Save items you love and shop later with ease."
+        />
       </Helmet>
       <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-6">
         <div className="container">
@@ -69,19 +99,30 @@ export default function Wishlist() {
           <h2 className="title" data-aos="fade-up">My Wishlist</h2>
           <div className="h-px bg-slate-300 dark:bg-slate-500 mb-10" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {wishlist.map((item, index) => (
-              <div key={item._id} data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'} >
-                <ProductCard item={item} isWishlist={true} />
-              </div>
-            ))}
+            {wishlist.map((item, index) => {
+              const isRemoving = removingItems.includes(item._id);
+              return (
+                <div key={item._id} data-aos={index % 2 === 0 ? "fade-right" : "fade-left"} className={`transition-all duration-300 ${isRemoving ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100"
+                  }`}>
+                  <ProductCard item={item} isWishlist={true} />
+                </div>
+              );
+            })}
           </div>
+
           {wishlist.length > 0 && (
             <div className="text-center mt-10" data-aos="fade-up">
-              <button onClick={() => {
-                wishlist.forEach((item) => removeProductFromWishlist(item._id));
-                toast.success("Wishlist cleared!");
-              }}
-                className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition" >
+              <button
+                onClick={() => {
+                  wishlist.forEach((item) => {
+                    const event = new CustomEvent("remove-from-wishlist", {
+                      detail: item._id,
+                    });
+                    window.dispatchEvent(event);
+                  });
+                  toast.success("Wishlist cleared!");
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition">
                 Clear Wishlist
               </button>
             </div>
