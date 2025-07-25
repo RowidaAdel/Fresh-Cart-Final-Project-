@@ -19,6 +19,7 @@ export default function Wishlist() {
   const { token } = useContext(authContext);
 
   const [removingItems, setRemovingItems] = useState([]);
+  const [isClearing, setIsClearing] = useState(false);
 
   useEffect(() => {
     document.title = "Wishlist";
@@ -112,18 +113,28 @@ export default function Wishlist() {
 
           {wishlist.length > 0 && (
             <div className="text-center mt-10" data-aos="fade-up">
-              <button
-                onClick={() => {
-                  wishlist.forEach((item) => {
-                    const event = new CustomEvent("remove-from-wishlist", {
-                      detail: item._id,
-                    });
-                    window.dispatchEvent(event);
+              <button onClick={() => {
+                  if (isClearing) return; 
+                  setIsClearing(true);
+                  Promise.all(
+                    wishlist.map((item) => {
+                      return new Promise((resolve) => {
+                        const event = new CustomEvent("remove-from-wishlist", {
+                          detail: item._id,
+                        });
+                        window.dispatchEvent(event);
+                        setTimeout(resolve, 300); 
+                      });
+                    })
+                  ).then(() => {
+                    toast.success("Wishlist cleared!");
+                    setIsClearing(false);
                   });
-                  toast.success("Wishlist cleared!");
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition">
-                Clear Wishlist
+                }}disabled={isClearing} className={`py-3 px-6 rounded-lg font-semibold transition  ${isClearing
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-red-600 hover:bg-red-700 text-white"
+                  }`}>
+                {isClearing ? "Clearing..." : "Clear Wishlist"}
               </button>
             </div>
           )}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CartItem from "../../components/CartItem/CartItem";
 import { Link } from "react-router";
 import AnimatedSVG from "../../components/AnimateSvg/AnimateSvg";
@@ -14,6 +14,7 @@ import { Helmet } from "react-helmet";
 export default function Cart() {
   const dispatch = useDispatch();
   const { cart, loading } = useSelector((state) => state.cart);
+  const [isClearingCart, setIsClearingCart] = useState(false);
 
   useEffect(() => {
     document.title = "Cart";
@@ -82,9 +83,18 @@ export default function Cart() {
           </div>
           {/* Buttons */}
           <div className="mt-10 flex flex-col sm:flex-row justify-between gap-4">
-            <button aria-label="Clear Cart" onClick={() => dispatch(clearCart())} className="btn gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl flex-1 sm:flex-none">
-              Clear Cart
-              <Trash />
+            <button aria-label="Clear Cart" onClick={() => {
+              if (isClearingCart) return;
+              setIsClearingCart(true);
+              dispatch(clearCart()).then(() => {
+                setIsClearingCart(false);
+              });
+            }} disabled={isClearingCart} className={`btn gap-2 px-4 py-2 rounded-xl flex-1 sm:flex-none transition  ${isClearingCart
+              ? "bg-gray-400 cursor-not-allowed text-white"
+              : "bg-red-600 hover:bg-red-500 text-white"
+              }`}>
+              {isClearingCart ? "Clearing..." : "Clear Cart"}
+              {!isClearingCart && <Trash />}
             </button>
             <Link to="/checkout" className="flex-1 sm:flex-none">
               <button aria-label="Next Step" className="btn bg-green-600 hover:bg-green-800 text-white px-6 py-3 rounded-xl w-full sm:w-auto">
