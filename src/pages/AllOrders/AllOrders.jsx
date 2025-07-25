@@ -72,7 +72,6 @@ export default function AllOrders() {
           <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
           <h2 className="title" data-aos="zoom-out">All Orders</h2>
           <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-
           {orders.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-center mt-16 gap-4">
               <i className="fa-solid fa-box-open text-5xl text-gray-400"></i>

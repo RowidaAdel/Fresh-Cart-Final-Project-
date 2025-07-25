@@ -3,8 +3,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import useFetch from '../../Hooks/useFetch';
+import { ChevronRight } from 'lucide-react';
 
 export default function SecondarySlider() {
   const navigate = useNavigate();
@@ -13,7 +14,13 @@ export default function SecondarySlider() {
 
   return (
     <div className="pb-8">
-      <h2 className="py-5 text-mainColor text-xl font-semibold">Shop Popular Categories</h2>
+      <div className="flex justify-between items-center py-5">
+        <h2 className="text-slate-800 dark:text-white text-2xl font-bold">Shop Popular Categories</h2>
+        <Link to="/categories" className="flex items-center gap-1 text-md font-bold text-mainColor hover:text-hoverColor underline underline-offset-2 transition-colors">
+          View All Categories
+          <ChevronRight size={20} />
+        </Link>
+      </div>
       <div className="relative cursor-pointer">
         <Swiper loop={categories?.length > 6} autoplay={{ delay: 500, disableOnInteraction: false }} spaceBetween={10}
           pagination={{ clickable: true, el: '.custom-swiper-pagination' }} modules={[Autoplay, Navigation, Pagination]} className="pb-4"

@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { ShoppingCart, Heart, Eye, HeartCrack } from 'lucide-react';
+import React, { useContext, useEffect } from 'react';
+import { ShoppingCart, Eye } from 'lucide-react';
 import { Link } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { addProductToCart } from '../../Redux/slices/cartSlice';
@@ -11,21 +11,44 @@ export default function ProductCard({ item, isWishlist = false }) {
     }
 
     const dispatch = useDispatch();
-    const { addProductToWishlist, removeProductFromWishlist } = useContext(WashlistContext);
+    const { addProductToWishlist, wishlistLike, removeProductFromWishlist, getLoggedUserWishlist } = useContext(WashlistContext);
+
+    useEffect(() => {
+        getLoggedUserWishlist();
+    }, []);
+
+    const isInWishlist =
+        Array.isArray(wishlistLike) &&
+        wishlistLike.some((product) => product && product._id === item._id);
 
     function handleWishlistAction() {
-        if (isWishlist) {
+        if (isInWishlist) {
             removeProductFromWishlist(item._id);
         } else {
             addProductToWishlist(item._id);
         }
     }
 
+    function calculateDiscount(price, priceAfterDiscount) {
+        if (!priceAfterDiscount || priceAfterDiscount >= price) return null;
+        const discount = 100 - Math.floor((priceAfterDiscount / price) * 100);
+        return discount;
+    }
+
+    const discount = calculateDiscount(item.price, item.priceAfterDiscount);
+
     return (
         <div className='bg-slate-200 shadow-2xl dark:bg-slate-600 p-3 rounded-2xl hover:scale-105 transition-all duration-300'
-            data-aos="fade-up" data-aos-duration="800" data-aos-offset="120">
+            data-aos="fade-up" data-aos-duration="800" data-aos-offset="120" >
             {/* Image Container */}
             <div className='relative group rounded-2xl overflow-hidden'>
+                {/* Discount Badge */}
+                {discount && (
+                    <div className="absolute bg-green-700 top-0 left-0 size-14 bg-darkPrimary flex flex-col justify-center items-center font-bold rounded-full rounded-tl-none z-20">
+                        <span className="text-orange-400">-{discount}%</span>
+                        <span className="text-green-500">Sale</span>
+                    </div>
+                )}
                 <img src={item.imageCover} alt={item.title} loading='lazy'
                     className='rounded-2xl w-full object-cover transition-transform duration-500 group-hover:scale-125' />
                 {/* Overlay Icons */}
@@ -38,16 +61,11 @@ export default function ProductCard({ item, isWishlist = false }) {
                             </div>
                         )}
                         {/* Heart Icon */}
-                        <div onClick={handleWishlistAction} className={`rounded-full p-3 cursor-pointer text-white opacity-0 translate-y-5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-150 ${isWishlist ? 'bg-mainColor' : 'bg-mainColor'}`}>
-                            {isWishlist ? (
-                                <HeartCrack size={30} className="transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12" />
-                            ) : (
-                                <Heart size={30} className="transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12" />
-                            )}
+                        <div onClick={handleWishlistAction} className="bg-mainColor rounded-full p-3 cursor-pointer opacity-0 translate-y-5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-150">
+                            <i className={`fa-solid fa-heart text-[30px] transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12 ${isInWishlist ? 'text-red-500' : 'text-white'}`} />
                         </div>
                         {/* Eye Icon */}
-                        <Link to={`/products/${item._id}`}
-                            className='bg-mainColor rounded-full p-3 cursor-pointer text-white opacity-0 translate-y-5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-200'>
+                        <Link to={`/products/${item._id}`} className='bg-mainColor rounded-full p-3 cursor-pointer text-white opacity-0 translate-y-5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-200'>
                             <Eye size={30} className='transition-transform duration-300 ease-in-out hover:scale-125 hover:rotate-12' />
                         </Link>
                     </div>
@@ -67,7 +85,9 @@ export default function ProductCard({ item, isWishlist = false }) {
                     </span>
                 </div>
                 <div className='flex items-center justify-between gap-1 mt-1'>
-                    <p className='text-xl font-bold text-amber-700 dark:text-mainColor mt-2'>{item.price} EGP</p>
+                    <p className='text-xl font-bold text-amber-700 dark:text-mainColor mt-2'>
+                        {item.priceAfterDiscount ? item.priceAfterDiscount : item.price} EGP
+                    </p>
                     <div>
                         <span className='text-yellow-500'>★</span>
                         <span className='text-sm dark:text-white'>{item.ratingsAverage}</span>

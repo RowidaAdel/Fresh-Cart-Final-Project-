@@ -4,6 +4,7 @@ import { Heart } from "lucide-react";
 import AnimatedSVG from "../../components/AnimateSvg/AnimateSvg";
 import animationData from '../../assets/images/zeroPurchase.json';
 import { Link } from "react-router";
+import Loading from '../../components/Loading/Loading';
 import ProductCard from "../../components/ProductCard/ProductCard";
 import toast from "react-hot-toast";
 import { authContext } from "../../Context/authContext";
@@ -12,12 +13,13 @@ import 'aos/dist/aos.css';
 import { Helmet } from "react-helmet";
 
 export default function Wishlist() {
-  const { wishlist, loading, removeProductFromWishlist } = useContext(WashlistContext);
+  const { wishlist, loading, removeProductFromWishlist, getLoggedUserWishlist } = useContext(WashlistContext);
   const { token } = useContext(authContext);
 
   useEffect(() => {
     document.title = "Wishlist";
-    AOS.init({ duration: 800, once: true });
+    AOS.init({ duration: 200, once: true });
+    getLoggedUserWishlist()
   }, []);
 
   if (!token) {
@@ -28,18 +30,12 @@ export default function Wishlist() {
     );
   }
 
-  if (loading) {
+   if (loading) {
     return (
-      <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh] py-6">
-        <div className="container">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-300 dark:bg-gray-700 animate-pulse rounded-lg"></div>
-            ))}
-          </div>
-        </div>
+      <div className="loading bg-slate-200 dark:bg-gray-800 min-h-[80vh] flex justify-center items-center">
+        <Loading />
       </div>
-    );
+    )
   }
 
   if (!wishlist || wishlist.length === 0) {
@@ -81,7 +77,7 @@ export default function Wishlist() {
           </div>
           {wishlist.length > 0 && (
             <div className="text-center mt-10" data-aos="fade-up">
-              <button aria-label="Clear Wishlist" onClick={() => {
+              <button onClick={() => {
                 wishlist.forEach((item) => removeProductFromWishlist(item._id));
                 toast.success("Wishlist cleared!");
               }}

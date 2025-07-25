@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { authContext } from "./authContext";
 
@@ -8,16 +8,19 @@ export const WashlistContext = createContext(null);
 export default function WashlistContextProvider({ children }) {
   const { token } = useContext(authContext);
   const [wishlist, setWishlist] = useState(null);
+  const [wishlistLike, setWishlistLike] = useState([]);
   const [loading, setLoading] = useState(false);
 
   async function getLoggedUserWishlist(showToast = false) {
     if (!token) return;
+    console.log("Fetching wishlist...");
     setLoading(true);
     try {
       const { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
         headers: { token }
       });
       setWishlist(data?.data || []);
+      setWishlistLike(data?.data || []);
       if (showToast) {
         toast.dismiss();
         toast.success("Wishlist loaded ✅", { id: "wishlist-load" });
@@ -34,8 +37,7 @@ export default function WashlistContextProvider({ children }) {
   async function addProductToWishlist(productId) {
     if (!token) return;
     setLoading(true);
-    setWishlist(prev => [...(prev || []), { product: { _id: productId }, _id: "temp-" + productId }]);
-
+    getLoggedUserWishlist()
     try {
       const { data } = await axios.post(
         "https://ecommerce.routemisr.com/api/v1/wishlist",
@@ -57,8 +59,7 @@ export default function WashlistContextProvider({ children }) {
   async function removeProductFromWishlist(wishlistItemId) {
     if (!token) return;
     setLoading(true);
-    setWishlist(prev => prev.filter(item => item._id !== wishlistItemId));
-
+    getLoggedUserWishlist()
     try {
       await axios.delete(
         `https://ecommerce.routemisr.com/api/v1/wishlist/${wishlistItemId}`,
@@ -69,19 +70,24 @@ export default function WashlistContextProvider({ children }) {
     } catch (error) {
       toast.dismiss();
       toast.error(error.response?.data?.message || "Failed to remove product", { id: "wishlist-remove" });
-      await getLoggedUserWishlist(false); 
+      await getLoggedUserWishlist(false);
     } finally {
       setLoading(false);
     }
   }
 
+  const didFetchRef = useRef(false);
+
   useEffect(() => {
-    getLoggedUserWishlist();
+    if (token && !didFetchRef.current) {
+      getLoggedUserWishlist();
+      didFetchRef.current = true;
+    }
   }, [token]);
 
   return (
     <WashlistContext.Provider
-      value={{wishlist, loading,getLoggedUserWishlist, addProductToWishlist,removeProductFromWishlist}} >
+      value={{ wishlist, wishlistLike, loading, getLoggedUserWishlist, addProductToWishlist, removeProductFromWishlist }} >
       {children}
     </WashlistContext.Provider>
   );
