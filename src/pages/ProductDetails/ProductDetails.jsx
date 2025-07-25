@@ -88,28 +88,39 @@ export default function ProductDetails() {
     return (
         <>
             <Helmet>
-                <meta name="description" content="View detailed information, specifications, and customer reviews for this product. Make confident shopping decisions with Fresh Cart." />
+                <meta
+                    name="description"
+                    content="View detailed information, specifications, and customer reviews for this product. Make confident shopping decisions with Fresh Cart."
+                />
             </Helmet>
-            <div className='bg-slate-200 dark:bg-gray-800 min-h-[80vh]'>
+            <div className="bg-slate-200 dark:bg-gray-800 min-h-[80vh]">
                 <div className="container py-10">
                     {/* Product Info */}
                     <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-                    <h2 className='title'>Product Details</h2>
+                    <h2 className="title">Product Details</h2>
                     <div className="h-px bg-slate-300 dark:bg-slate-500 my-1 mb-10" />
                     <div className="relative bg-slate-200 dark:bg-gray-900 p-6 rounded-lg shadow-xl max-w-7xl mx-auto space-y-6">
                         {/* Wishlist Icon */}
                         <button onClick={handleWishlistToggle} aria-label="Toggle wishlist"
-                            className={`cursor-pointer absolute top-4 right-4 transition ${isInWishlist ? 'text-red-500' : 'text-gray-600 dark:text-gray-300 hover:text-red-500'}`}>
+                            className={`cursor-pointer absolute top-4 right-4 transition ${isInWishlist
+                                    ? 'text-red-500'
+                                    : 'text-gray-600 dark:text-gray-300 hover:text-red-500'
+                                }`}>
                             <Heart className="w-6 h-6 fill-current" fill={isInWishlist ? 'red' : 'none'} />
                         </button>
                         {/* Images & Info */}
-                        <div className="flex flex-col md:flex-row gap-8 items-center" >
-                            <div className="md:w-1/3 space-y-4" data-aos="fade-right">
-                                <img loading='lazy' src={product.imageCover} alt="Main" className="rounded-lg object-cover w-full max-h-[340px]" />
-                                <Swiper spaceBetween={20} slidesPerView={2} autoplay={{ delay: 2000 }} modules={[Autoplay]}>
+                        <div className="flex flex-col md:flex-row gap-8 items-center">
+                            <div className="w-full md:w-1/3 space-y-4" data-aos="fade-right">
+                                <img loading="lazy" src={product.imageCover} alt="Main" className="rounded-lg object-cover w-full max-h-[340px]" />
+                                <Swiper spaceBetween={20} modules={[Autoplay]} autoplay={{ delay: 2000 }}
+                                    breakpoints={{
+                                        0: { slidesPerView: 1 },
+                                        640: { slidesPerView: 2 },
+                                        1024: { slidesPerView: 3 },
+                                    }} >
                                     {product.images.map((img, i) => (
                                         <SwiperSlide key={i}>
-                                            <img src={img} alt={`img-${i}`} className="rounded-md object-cover w-full h-28" />
+                                            <img src={img} alt={`img-${i}`} className="rounded-md object-cover w-full h-28 sm:h-32 md:h-36 lg:h-40 xl:h-44" />
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
@@ -117,27 +128,35 @@ export default function ProductDetails() {
                             <div className="md:w-2/3 space-y-4 text-center md:text-left" data-aos="fade-left">
                                 <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
                                     {(() => {
-                                        const title = product?.title || "";
-                                        const words = title.split(" ");
-                                        return words.length > 3 ? words.slice(0, 3).join(" ") + "..." : title;
+                                        const title = product?.title || '';
+                                        const words = title.split(' ');
+                                        return words.length > 3 ? words.slice(0, 3).join(' ') + '...' : title;
                                     })()}
                                 </h3>
                                 <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
                                 <div className="flex justify-center md:justify-start items-center gap-4">
-                                    <span className="bg-mainColor text-white text-sm px-3 py-1 rounded">★ {product.ratingsAverage}</span>
-                                    <span className="text-sm text-gray-600 dark:text-gray-400">{product.ratingsQuantity} reviews</span>
+                                    <span className="bg-mainColor text-white text-sm px-3 py-1 rounded">
+                                        ★ {product.ratingsAverage}
+                                    </span>
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        {product.ratingsQuantity} reviews
+                                    </span>
                                 </div>
                                 <div className="flex justify-center md:justify-start items-center gap-4">
                                     <span className="text-3xl font-bold text-gray-900 dark:text-white">${product.price}</span>
-                                    <span className="text-red-600 font-semibold text-sm line-through">${product.price + 300}</span>
+                                    <span className="text-red-600 font-semibold text-sm line-through">
+                                        ${product.price + 300}
+                                    </span>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
                                     <button disabled={isDisabled} onClick={handleBuyNow} aria-label="Buy Now"
-                                        className={`flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                        className={`flex-1 bg-mainColor hover:bg-hoverColor text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                                            }`}>
                                         Buy Now
                                     </button>
-                                    <button disabled={isDisabled} onClick={() => dispatch(addProductToCart(product._id))} aria-label="Add to cart"
-                                        className={`flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    <button disabled={isDisabled} onClick={() => dispatch(addProductToCart(product._id))}
+                                        aria-label="Add to cart" className={`flex-1 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-2 rounded ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                                            }`}>
                                         Add to Cart
                                     </button>
                                 </div>
@@ -148,7 +167,9 @@ export default function ProductDetails() {
                     {related.length > 0 && (
                         <div className="mt-14">
                             <div className="h-px bg-slate-300 dark:bg-slate-500 my-1" />
-                            <h2 className="title" data-aos="zoom-out">Related Products</h2>
+                            <h2 className="title" data-aos="zoom-out">
+                                Related Products
+                            </h2>
                             <div className="h-px bg-slate-300 dark:bg-slate-500 mb-10" />
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                 {related.map(item => (

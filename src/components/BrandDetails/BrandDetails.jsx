@@ -4,6 +4,7 @@ import ProductCard from '../ProductCard/ProductCard';
 import Loading from '../Loading/Loading';
 import NoProduct from '../NoProduct/NoProduct';
 import useFetch from '../../Hooks/useFetch';
+import { Helmet } from 'react-helmet';
 
 export default function BrandDetails() {
   const { id } = useParams();
