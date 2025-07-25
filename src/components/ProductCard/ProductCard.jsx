@@ -19,6 +19,8 @@ export default function ProductCard({ item, isWishlist = false }) {
         Array.isArray(wishlistData) &&
         wishlistData.some((product) => product && product._id === item._id);
 
+    const [isTouched, setIsTouched] = React.useState(false);
+
     function handleWishlistAction() {
         if (isInWishlist) {
             const event = new CustomEvent('remove-from-wishlist', {
@@ -40,9 +42,9 @@ export default function ProductCard({ item, isWishlist = false }) {
 
     return (
         <div className='bg-slate-200 shadow-2xl dark:bg-slate-600 p-3 rounded-2xl hover:scale-105 transition-all duration-300'
-            data-aos="fade-up" data-aos-duration="800" data-aos-offset="120" >
+            data-aos="fade-up" data-aos-duration="800" data-aos-offset="120"  >
             {/* Image Container */}
-            <div className='relative group rounded-2xl overflow-hidden'>
+            <div className='relative group rounded-2xl overflow-hidden' onTouchStart={() => setIsTouched(prev => !prev)} onMouseLeave={() => setIsTouched(false)}>
                 {/* Discount Badge */}
                 {discount && (
                     <div className="absolute bg-green-700 top-0 left-0 size-14 bg-darkPrimary flex flex-col justify-center items-center font-bold rounded-full rounded-tl-none z-20">
@@ -50,10 +52,11 @@ export default function ProductCard({ item, isWishlist = false }) {
                         <span className="text-green-500">Sale</span>
                     </div>
                 )}
-                <img src={item.imageCover} alt={item.title} loading='lazy'
-                    className='rounded-2xl w-full object-cover transition-transform duration-500 group-hover:scale-125' />
+                <img src={item.imageCover} alt={item.title} loading='lazy' className='rounded-2xl w-full object-cover transition-transform duration-500 group-hover:scale-125' />
                 {/* Overlay Icons */}
-                <div className='absolute inset-0 bg-white/30 dark:bg-black/30 backdrop-blur-xs opacity-0 group-hover:opacity-100 flex justify-center items-center gap-4 transition-opacity duration-300 z-10'>
+                <div className={`absolute inset-0 bg-white/30 dark:bg-black/30 backdrop-blur-xs 
+                    ${isTouched ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} 
+                    flex justify-center items-center gap-4 transition-opacity duration-300 z-10`}>
                     <div className='flex gap-4'>
                         {/* Add to Cart */}
                         {!isWishlist && (

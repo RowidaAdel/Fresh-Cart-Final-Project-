@@ -40,9 +40,9 @@ const routes = createBrowserRouter([
       { path: '*', element: <Notfound /> },
       {
         path: '/home', element: (
-          // <ProtectedRoutes>
+          <ProtectedRoutes>
             <Home />
-          // </ProtectedRoutes>
+          </ProtectedRoutes>
         )
       },
       {

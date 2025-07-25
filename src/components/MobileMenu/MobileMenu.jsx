@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
 import { CircleUserRound, Heart, LogIn, LogOut, ShoppingCart } from 'lucide-react';
-import { WashlistContext } from '../../Context/washListContext';
 import { useSelector } from 'react-redux';
+import { useWishlistQuery } from '../../Hooks/useWishlistQuery';
 
 export default function MobileMenu({ token, logout, toggleMobileMenu }) {
 
     const cart = useSelector((state) => state.cart.cart);
-    const { wishlist } = useContext(WashlistContext);
+    const { data: wishlist = [] } = useWishlistQuery();
 
     const counter = cart?.numOfCartItems || 0;
-    const wishlistCount = wishlist?.length || 0;
+    const wishlistCount = wishlist.length;
 
     return (
         <div className={`lg:hidden transition-all duration-500`}>
