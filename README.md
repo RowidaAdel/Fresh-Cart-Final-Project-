@@ -6,16 +6,12 @@
 
 👉 [Click here to view the live demo](https://fresh-cart-final-project-blond.vercel.app/)
 
-## 📸 Screenshots
-
-![Homepage Screenshot](./screenshots/homepage.png)
-<!-- Add more screenshots if needed -->
 
 ## ✨ Features
 
 - 🔐 **Authentication**: Login & register with JWT support
 - 🌙 **Dark/Light Mode** toggle
-- 🛍️ **Product Listing** with filters and sorting
+- 🛍️ **Product Listing** 
 - ❤️ **Wishlist** with persistent storage
 - 🛒 **Cart** with quantity management and Redux Toolkit
 - 🧾 **Checkout** with form validation
