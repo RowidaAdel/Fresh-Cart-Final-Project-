@@ -1,12 +1,62 @@
-# React + Vite
+# 🛒 Fresh Cart - E-Commerce Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Fresh Cart** is a modern, responsive e-commerce web application that allows users to browse products, manage their shopping cart and wishlist, and complete purchases. The app also supports authentication, protected routes, and responsive design with dark/light mode toggle.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+👉 [Click here to view the live demo](https://fresh-cart-final-project-blond.vercel.app/)
 
-## Expanding the ESLint configuration
+## 📸 Screenshots
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+![Homepage Screenshot](./screenshots/homepage.png)
+<!-- Add more screenshots if needed -->
+
+## ✨ Features
+
+- 🔐 **Authentication**: Login & register with JWT support
+- 🌙 **Dark/Light Mode** toggle
+- 🛍️ **Product Listing** with filters and sorting
+- ❤️ **Wishlist** with persistent storage
+- 🛒 **Cart** with quantity management and Redux Toolkit
+- 🧾 **Checkout** with form validation
+- 🔄 **Optimistic UI** updates for better user experience
+- ⚡ **Loading animations** for enhanced UX
+- 📱 **Fully Responsive** (mobile-first design)
+- 🔍 **Product Details** with Swiper gallery
+- ✅ **Error handling** and fallback UIs
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- **React.js (Vite)**
+- **Tailwind CSS**
+- **Redux Toolkit** for cart management
+- **React Query** for data fetching
+- **React Router**
+- **Axios**
+- **Framer Motion** for animations
+- **Lucide Icons** for modern SVG icons
+- **SweetAlert2** for alerts
+- **Swiper.js** for sliders
+
+### Backend (used APIs)
+
+- **Dummy API**: Products, cart, and user endpoints
+- (If using your own backend, add the tech used like: Node.js, Express, MongoDB...)
+
+## 📦 Installation & Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/RowidaAdel/Fresh-Cart-Final-Project-.git
+
+# Navigate into the project folder
+cd Fresh-Cart-Final-Project-
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+
